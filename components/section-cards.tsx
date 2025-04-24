@@ -40,7 +40,7 @@ export function SectionCards({ data }: { data: any }) {
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
-                Total Journal Entries Created
+                Total {module.supabase.table.replace('_', ' ')} Created
               </div>
               <div className="text-muted-foreground">All time</div>
               <Button asChild>
