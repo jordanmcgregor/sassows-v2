@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SubmitButton } from "@/components/submit-button"
 import { signUpAction } from "@/app/actions";
+import Link from "next/link"
 
 export function SignupForm({
   className,
@@ -46,6 +47,12 @@ export function SignupForm({
           Login with GitHub
         </Button> */}
       </div>
+      <p className="text-sm text text-foreground text-center">
+        Already have an account?{" "}
+        <Link className="text-primary font-medium underline" href="/sign-in">
+          Sign in
+        </Link>
+      </p>
       {/* <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
         <a href="#" className="underline underline-offset-4">
