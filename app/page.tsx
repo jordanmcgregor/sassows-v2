@@ -11,10 +11,18 @@ import { GalleryVerticalEnd } from "lucide-react"
 import { LoginForm } from "@/components/login-form"
 import { IconFlower } from "@tabler/icons-react"
 import { SignupForm } from "@/components/signup-form"
+import { headers } from "next/headers";
+import { NextRequest } from "next/server";
 
 export default async function Signup(props: {
-  searchParams: Promise<Message>;
+  searchParams: Promise<Message>
 }) {
+  // const headersList = await headers();
+  // const host = headersList.get('host') || '';
+  // const protocol = headersList.get('x-forwarded-proto') || 'http';
+  // const baseUrl = `${protocol}://${host}`;
+  // console.log(baseUrl)
+
   const searchParams = await props.searchParams;
   if ("success" in searchParams) {
     return (

@@ -10,9 +10,9 @@ export const signUpAction = async (formData: FormData) => {
   const password = formData.get("password")?.toString();
   const supabase = await createClient();
   const headersList = await headers();
-  const protocol = headersList.get("x-forwarded-proto") || "http";
-  const host = headersList.get("host");
-  const url = protocol + host
+  const host = headersList.get('host') || '';
+  const protocol = headersList.get('x-forwarded-proto') || 'http';
+  const baseUrl = `${protocol}://${host}`;
 
   console.log(email)
   console.log(password)
@@ -29,7 +29,7 @@ export const signUpAction = async (formData: FormData) => {
     email,
     password,
     options: {
-      emailRedirectTo: `${url}/home`,
+      emailRedirectTo: `${baseUrl}/home`,
     },
   });
 
