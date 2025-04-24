@@ -1,8 +1,8 @@
 import { GalleryVerticalEnd } from "lucide-react"
 
+import { signInAction } from "@/app/actions";
 import { LoginForm } from "@/components/login-form"
 import { IconFlower } from "@tabler/icons-react"
-import { SignupForm } from "@/components/signup-form"
 
 export default function LoginPage() {
   return (
@@ -18,7 +18,7 @@ export default function LoginPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <SignupForm />
+            <LoginForm />
           </div>
         </div>
       </div>

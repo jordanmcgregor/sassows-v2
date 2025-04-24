@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card"
 import { createClient } from '@/utils/supabase/client';
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const childSchema = z.object({
     name: z.string().min(1, {
@@ -40,6 +41,7 @@ export default function ProfileForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
+    const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -53,7 +55,7 @@ export default function ProfileForm() {
         name: "children",
     })
 
-    
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const supabase = createClient()
         setIsSubmitting(true)
@@ -72,9 +74,9 @@ export default function ProfileForm() {
             setError("Something went wrong while saving. Please try again.")
         } else {
             setSuccess(true)
-            form.reset({ children: [{ name: "", birthdate: "" }] })
+            router.push('/home')
+            // form.reset({ children: [{ name: "", birthdate: "" }] })
         }
-
         setIsSubmitting(false)
     }
 
