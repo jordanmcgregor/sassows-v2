@@ -12,6 +12,7 @@ export const signUpAction = async (formData: FormData) => {
   const headersList = await headers();
   const protocol = headersList.get("x-forwarded-proto") || "http";
   const host = headersList.get("host");
+  const url = protocol + host
 
   console.log(email)
   console.log(password)
@@ -28,9 +29,11 @@ export const signUpAction = async (formData: FormData) => {
     email,
     password,
     options: {
-      emailRedirectTo: `${host}/home`,
+      emailRedirectTo: `${url}/home`,
     },
   });
+
+  console.log(host)
 
   if (error) {
     console.error(error.code + " " + error.message);
