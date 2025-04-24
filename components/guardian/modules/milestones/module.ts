@@ -6,7 +6,8 @@ let module: ModuleType = {
     name: 'milestone',
     view: {
         records: {
-            primary: "milestone"
+            primary: "milestone",
+            icon: "IconSchool"
         }
     },
     header: {

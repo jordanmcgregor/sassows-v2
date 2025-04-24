@@ -5,7 +5,8 @@ let module: ModuleType = {
     name: 'pronunciation',
     view: {
         records: {
-            primary: "word"
+            primary: "word",
+            icon: "IconBook"
         }
     },
     header: {

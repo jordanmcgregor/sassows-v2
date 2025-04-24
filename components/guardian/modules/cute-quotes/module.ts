@@ -6,7 +6,8 @@ let module: ModuleType = {
     name: 'quote_text',
     view: {
         records: {
-            primary: "quote_text"
+            primary: "quote_text",
+            icon: "IconQuote",
         }
     },
     header: {
@@ -115,7 +116,7 @@ let module: ModuleType = {
             view: {
                 show: true,
                 title: "Guess What I Said!",
-                description: "Today I said something so funny or sweet, it made everyone laugh (or cry happy tears). You're gonna wanna remember this one forever!"
+                description: "Today I said something so funny or sweet, it made everyone laugh (or cry happy tears). You're gonna wanna remember this one forever!",             
             }
         }
     },

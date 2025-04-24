@@ -6,7 +6,8 @@ let module: ModuleType = {
     name: 'tradition_name',
     view: {
         records: {
-            primary: "tradition_name"
+            primary: "tradition_name",
+            icon: "IconRepeat"
         }
     },
     header: {

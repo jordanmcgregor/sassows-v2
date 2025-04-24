@@ -6,7 +6,8 @@ let module: ModuleType = {
     name: 'moment_description',
     view: {
         records: {
-            primary: "moment_description"
+            primary: "moment_description",
+            icon: "IconClockHeart"
         }
     },
     header: {

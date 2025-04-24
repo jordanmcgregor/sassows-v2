@@ -4,6 +4,7 @@ import { ModuleType, ModulesAllArray } from "@/types/modules/type";
 import { schemaDetermineConvert } from "@/utils/modules/schema/determine/convert/schema-determine-convert";
 import { FlyoutRecordDetails } from "@/components/composites/flyout/record/details/flyout";
 import { useChild } from "@/context/selected-child"
+import ModuleIcon, { componentMap } from "@/components/guardian/modules/icons"
 
 type Entry = {
     word: string;
@@ -57,17 +58,20 @@ export function TableSortedSegmentedAlphabet({ module, modules }: { module: Modu
                         <ul role="list" className="divide-y divide-gray-100">
                             {directory[letter].map((record: any, index: number) => {
                                 const { details, activeModule } = schemaDetermineConvert(record, modules);
+                                const Component = componentMap[activeModule?.view.records.icon as keyof typeof componentMap]
                                 return (
                                     <li
                                         key={index}
                                         className="flex px-3 py-5 justify-between items-center relative"
                                     >
-                                        <div className="flex gap-x-4">
-                                            <img
-                                                alt=""
-                                                src={record.image_url || "/themasters.jpeg"}
-                                                className="size-12 flex-none rounded-xl bg-gray-50"
-                                            />
+                                        <div className="flex items-center gap-x-4">
+                                            {
+                                                activeModule
+                                                    ?
+                                                    <ModuleIcon module={activeModule} />
+                                                    :
+                                                    null
+                                            }
                                             <div className="min-w-0">
                                                 <p className="text-sm/6 font-semibold text-gray-900">
                                                     {activeModule ? record[activeModule.view.records.primary] : null}

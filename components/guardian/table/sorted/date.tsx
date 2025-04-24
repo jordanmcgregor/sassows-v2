@@ -4,6 +4,7 @@ import { ModuleType, ModulesAllArray } from "@/types/modules/type"
 import { schemaDetermineConvert } from "@/utils/modules/schema/determine/convert/schema-determine-convert"
 import { FlyoutRecordDetails } from "@/components/composites/flyout/record/details/flyout"
 import { useChild } from "@/context/selected-child"
+import ModuleIcon, { componentMap } from "@/components/guardian/modules/icons"
 
 type entries = {
     word: number;
@@ -71,12 +72,19 @@ export function TableSortedSegmentedDate({ module, modules }: { module: ModuleTy
                                             key={index}
                                             className="flex px-3 py-5 justify-between items-center relative"
                                         >
-                                            <div className="flex gap-x-4">
-                                                <img
+                                            <div className="flex items-center gap-x-4">
+                                                {/* <img
                                                     alt=""
                                                     src="/themasters.jpeg"
                                                     className="size-12 flex-none rounded-xl bg-gray-50"
-                                                />
+                                                /> */}
+                                                {
+                                                    activeModule
+                                                        ?
+                                                        <ModuleIcon module={activeModule} />
+                                                        :
+                                                        null
+                                                }
                                                 <div className="min-w-0">
                                                     <p className="text-sm/6 font-semibold text-gray-900">
                                                         {activeModule == null ? null : record[activeModule.name]}

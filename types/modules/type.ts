@@ -1,3 +1,4 @@
+import { ForwardRefExoticComponent } from "react"
 import { z, ZodTypeAny } from "zod"
 
 export type ModuleType = {
@@ -5,7 +6,8 @@ export type ModuleType = {
     name: 'milestone' | 'pronunciation' | 'quote_text' | 'favorite_item_name' | 'tradition_name' | 'moment_description',
     view: {
         records: {
-            primary: string
+            primary: string,
+            icon: "IconQuote" | "IconHeart" | "IconSchool" | "IconClockHeart" | "IconBook" | "IconRepeat"
         }
     },
     header: {
@@ -54,3 +56,7 @@ export type Field = {
 }
 
 export type ModulesAllArray = [ModuleType, ModuleType, ModuleType, ModuleType, ModuleType, ModuleType]
+
+export type ModuleIcon = React.FC<React.SVGProps<SVGSVGElement>>
+
+// export type ModuleIcons = { ModuleIcon, ModuleIcon, ModuleIcon, ModuleIcon, ModuleIcon }

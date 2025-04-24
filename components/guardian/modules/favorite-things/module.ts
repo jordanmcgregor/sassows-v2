@@ -6,7 +6,8 @@ let module: ModuleType = {
     name: 'favorite_item_name',
     view: {
         records: {
-            primary: "favorite_item_name"
+            primary: "favorite_item_name",
+               icon: "IconHeart"
         }
     },
     header: {
