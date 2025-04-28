@@ -13,9 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sassows – A Journaling App for Parents",
+  title: "Sassows",
   description:
     "Sassows is a sweet and simple place to capture your child's milestones, adorable mispronunciations, cute quotes, favorite things, and all the precious moments you don’t want to forget.",
+  manifest: '/manifest.ts',
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+  }
 };
 
 export default function RootLayout({
