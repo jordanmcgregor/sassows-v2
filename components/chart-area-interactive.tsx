@@ -126,21 +126,37 @@ const chartData = [
   { date: "2024-06-30", desktop: 446, mobile: 400 },
 ]
 
+// const chartConfig = {
+//   visitors: {
+//     label: "Visitors",
+//   },
+//   desktop: {
+//     label: "Desktop",
+//     color: "var(--primary)",
+//   },
+//   mobile: {
+//     label: "Mobile",
+//     color: "var(--primary)",
+//   },
+// } satisfies ChartConfig
+
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  milestones: {
+    label: "Milestones",
+    color: "var(--blue)",
   },
-  desktop: {
-    label: "Desktop",
-    color: "var(--primary)",
+  pronunciations: {
+    label: "Pronunciations",
+    color: "var(--green)",
   },
-  mobile: {
-    label: "Mobile",
-    color: "var(--primary)",
+  cute_quotes: {
+    label: "Cute Quotes",
+    color: "var(--purple)",
   },
+  // Add other table types here
 } satisfies ChartConfig
 
-export function ChartAreaInteractive() {
+export function ChartAreaInteractive({ data }: { data: any }) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
 
@@ -150,9 +166,11 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  const filteredData = chartData.filter((item) => {
+  // console.log(data)
+
+  const filteredData = data.filter((item: any) => {
     const date = new Date(item.date)
-    const referenceDate = new Date("2024-06-30")
+    const referenceDate = new Date()
     let daysToSubtract = 90
     if (timeRange === "30d") {
       daysToSubtract = 30
@@ -164,10 +182,13 @@ export function ChartAreaInteractive() {
     return date >= startDate
   })
 
+  console.log("yo")
+  console.log(filteredData)
+
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Visitors</CardTitle>
+        <CardTitle className="capitalize">{Object.keys(data[0])[1].replace('_', " ")}</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
             Total for the last 3 months
@@ -271,19 +292,19 @@ export function ChartAreaInteractive() {
               }
             />
             <Area
-              dataKey="mobile"
+              dataKey={Object.keys(data[0])[1]}
               type="natural"
               fill="url(#fillMobile)"
               stroke="var(--color-mobile)"
               stackId="a"
             />
-            <Area
-              dataKey="desktop"
+            {/* <Area
+              dataKey="milestones"
               type="natural"
               fill="url(#fillDesktop)"
               stroke="var(--color-desktop)"
               stackId="a"
-            />
+            /> */}
           </AreaChart>
         </ChartContainer>
       </CardContent>
