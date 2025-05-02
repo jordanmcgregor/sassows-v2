@@ -6,12 +6,13 @@ import { SiteHeader } from "@/components/site-header"
 import { createClient } from '@/utils/supabase/server';
 
 import datum from "./data.json"
+import { getMemoizedUser } from "@/utils/memoization/supabase/users/getMemoizedUser"
 const title = 'Home'
 
 export default async function Page() {
   const supabase = await createClient();
+  const user = getMemoizedUser()
   const { data, error } = await supabase.from('my_entries_view').select();
-  console.log(data)
 
   return (
     <>

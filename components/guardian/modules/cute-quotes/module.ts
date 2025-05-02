@@ -1,7 +1,7 @@
 import { ModuleType } from '@/types/modules/type';
-import { z, ZodTypeAny } from "zod"
+import { filesPlan } from '@/lib/plan';
 
-let module: ModuleType = {
+let feature: ModuleType = {
     metadata: {},
     name: 'quote_text',
     view: {
@@ -12,7 +12,11 @@ let module: ModuleType = {
     },
     header: {
         headline: "Most Adorable Quotes",
-        description: "Capture the precious, funny, and heartwarming things your little one says as they start to find their voice. These little gems will make you smile forever!"
+        description: "Capture the precious, funny, and heartwarming things your little one says as they start to find their voice. These little gems will make you smile forever!",
+        dialog: {
+            title: "What is a cute quote?",
+            description: "A cute quote is one of those sweet, funny, or endearing things your little one says that fills your heart with joy. It’s the way they mispronounce words, the random thoughts they share, or the funny observations they make as they begin to understand the world around them. These tiny moments capture their personality and offer a glimpse into the adorable ways they see the world. From the unexpected to the downright hilarious, these quotes are the gems that remind you how precious and fleeting these early years are. It’s the words that make you smile, laugh, and cherish every moment."
+        }
     },
     flyout: {
         record: {
@@ -107,7 +111,8 @@ let module: ModuleType = {
                                 name: "files",
                                 type: "files",
                                 required: false,
-                                placeholder: ""
+                                placeholder: "",
+                                plan: filesPlan
                             }
                         },
                     ]
@@ -116,7 +121,7 @@ let module: ModuleType = {
             view: {
                 show: true,
                 title: "Guess What I Said!",
-                description: "Today I said something so funny or sweet, it made everyone laugh (or cry happy tears). You're gonna wanna remember this one forever!",             
+                description: "Today I said something so funny or sweet, it made everyone laugh (or cry happy tears). You're gonna wanna remember this one forever!",
             }
         }
     },
@@ -129,7 +134,11 @@ let module: ModuleType = {
     },
     layout: {
         table: 'sortedSegmentedDate',
-    }
+    },
+    plan: 'premium',
+    icon: "IconQuote",
+    url: "/cute-quotes",
+    title: "Cute Quotes"
 }
 
-export default module;
+export default feature;

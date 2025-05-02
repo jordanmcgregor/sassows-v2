@@ -1,18 +1,23 @@
+import { filesPlan } from '@/lib/plan';
 import { ModuleType } from '@/types/modules/type';
 import { z, ZodTypeAny } from "zod"
 
-let module: ModuleType = {
+let feature: ModuleType = {
     metadata: {},
     name: 'favorite_item_name',
     view: {
         records: {
             primary: "favorite_item_name",
-               icon: "IconHeart"
+            icon: "IconHeart"
         }
     },
     header: {
         headline: "Favorite Things & Treasured Toys",
-        description: "Capture the heart-melting memories of your little one's favorite objects—from beloved bears to must-watch movies. These items hold big feelings and even bigger stories."
+        description: "Capture the heart-melting memories of your little one's favorite objects—from beloved bears to must-watch movies. These items hold big feelings and even bigger stories.",
+        dialog: {
+            title: "What is a favorite thing?",
+            description: "A favorite thing is any object, activity, place, or memory that brings your child joy, comfort, or excitement. It could be their most-loved toy, a special blanket, a favorite food, or even a simple routine like bedtime stories or trips to the park. These things help define their personality and bring insight into what lights them up inside. Recording these favorites allows you to look back and remember the little details that made each stage of childhood so meaningful."
+        }
     },
     flyout: {
         record: {
@@ -129,7 +134,8 @@ let module: ModuleType = {
                                 name: "files",
                                 type: "files",
                                 required: false,
-                                placeholder: ""
+                                placeholder: "",
+                                plan: filesPlan
                             }
                         },
                     ]
@@ -151,7 +157,11 @@ let module: ModuleType = {
     },
     layout: {
         table: 'sortedSegmentedDate',
-    }
+    },
+    plan: 'premium',
+    icon: "IconHeart",
+    url: "/favorite-things",
+    title: "Favorite Things"
 }
 
-export default module;
+export default feature;

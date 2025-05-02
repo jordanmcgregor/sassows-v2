@@ -19,6 +19,17 @@ type ChildContextType = {
 // 3. Create the context with a fallback that will error if used outside the provider
 const ChildContext = createContext<ChildContextType | undefined>(undefined);
 
+
+type User = {
+  product_id: string;
+  // extend with more fields as needed
+};
+// Context for user
+type UserContextType = {
+  user: User;
+};
+const UserContext = createContext<User | undefined>(undefined);
+
 // // 4. Provider component
 // export function ChildProvider({
 //   children,
@@ -40,7 +51,15 @@ const ChildContext = createContext<ChildContextType | undefined>(undefined);
 export const useChild = () => {
   const context = useContext(ChildContext);
   if (!context) {
-    throw new Error('useChild must be used within a ChildProvider');
+    throw new Error('useChild must be used within an OnboardedProvider');
+  }
+  return context;
+};
+
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within an OnboardedProvider');
   }
   return context;
 };
@@ -48,12 +67,16 @@ export const useChild = () => {
 
 import { useEffect } from 'react';
 
-export function ChildProvider({
+
+
+export function OnboardedProvider({
   children,
   initialChildren,
+  user,
 }: {
   children: React.ReactNode;
   initialChildren: Child[];
+  user: User;
 }) {
   const [selectedChild, setSelectedChildState] = useState<Child | null>(null);
 
@@ -74,8 +97,11 @@ export function ChildProvider({
   if (!selectedChild) return null; // or a loading spinner
 
   return (
-    <ChildContext.Provider value={{ selectedChild, setSelectedChild, allChildren: initialChildren }}>
-      {children}
-    </ChildContext.Provider>
+    <UserContext.Provider value={user}>
+      <ChildContext.Provider value={{ selectedChild, setSelectedChild, allChildren: initialChildren }}>
+        {children}
+      </ChildContext.Provider>
+    </UserContext.Provider>
   );
 }
+

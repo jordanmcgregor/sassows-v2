@@ -18,7 +18,6 @@ export default async function Page() {
     if (data) {
         separateTableArrays = createSeparateTableArrays(data);
     }
-    // console.log(separateTableArrays['pronunciations'])
 
     return (
         <>
@@ -143,8 +142,6 @@ function createSeparateTableArrays(data: DataEntry[]): TableArrays {
 // const separateTableArrays = createSeparateTableArrays(originalData);
 
 // // Example output for milestones
-// console.log("Milestones data:");
-// console.log(JSON.stringify(separateTableArrays.milestones, null, 2));
 
 // // You can access each array individually like:
 // // separateTableArrays.pronunciations

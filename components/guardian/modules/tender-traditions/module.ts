@@ -1,7 +1,8 @@
+import { filesPlan } from '@/lib/plan';
 import { ModuleType } from '@/types/modules/type';
 import { z, ZodTypeAny } from "zod"
 
-let module: ModuleType = {
+let feature: ModuleType = {
     metadata: {},
     name: 'tradition_name',
     view: {
@@ -12,7 +13,11 @@ let module: ModuleType = {
     },
     header: {
         headline: "Tender Traditions & Cozy Rituals",
-        description: "Preserve the little habits that brought comfort, joy, and magic to your days—from bedtime stories to Saturday pancakes with rainbow swirls. These moments, small as they seem, shape the soul."
+        description: "Preserve the little habits that brought comfort, joy, and magic to your days—from bedtime stories to Saturday pancakes with rainbow swirls. These moments, small as they seem, shape the soul.",
+        dialog: {
+            title: "What is a tender tradition?",
+            description: "A tender tradition is one of those sweet, soulful routines that shape the rhythm of childhood and wrap your days in comfort. It might be watching nature documentaries in the dark with popcorn, Saturday morning crepes with rainbow sprinkles, or the quiet ritual of humming the same lullaby every night. These aren't just habits—they’re love in action, the little things that become the big things. Recording them now gives your future self the gift of vivid memories and treasured emotions that stand the test of time."
+        }
     },
     flyout: {
         record: {
@@ -118,7 +123,8 @@ let module: ModuleType = {
                                 name: "files",
                                 type: "files",
                                 required: false,
-                                placeholder: ""
+                                placeholder: "",
+                                plan: filesPlan
                             }
                         },
                     ]
@@ -140,7 +146,11 @@ let module: ModuleType = {
     },
     layout: {
         table: 'sortedSegmentedDate',
-    }
+    },
+    plan: 'premium',
+    icon: "IconRepeat",
+    url: "/tender-traditions",
+    title: "Tender Traditions"
 }
 
-export default module;
+export default feature;

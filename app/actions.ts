@@ -14,9 +14,6 @@ export const signUpAction = async (formData: FormData) => {
   const protocol = headersList.get('x-forwarded-proto') || 'http';
   const baseUrl = `${protocol}://${host}`;
 
-  console.log(email)
-  console.log(password)
-
   if (!email || !password) {
     return encodedRedirect(
       "error",
@@ -32,8 +29,6 @@ export const signUpAction = async (formData: FormData) => {
       emailRedirectTo: `${baseUrl}/auth/callback`,
     },
   });
-
-  console.log(host)
 
   if (error) {
     console.error(error.code + " " + error.message);
@@ -51,9 +46,6 @@ export const signInAction = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const supabase = await createClient();
-
-  console.log(email)
-  console.log(password)
 
   const { error } = await supabase.auth.signInWithPassword({
     email,

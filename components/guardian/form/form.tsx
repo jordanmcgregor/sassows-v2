@@ -219,13 +219,16 @@ import { ModuleType } from "@/types/modules/type"
 import { useState, useRef } from "react";
 import { createClient } from '@/utils/supabase/client';
 import { uploadToS3 } from "@/utils/aws/s3/files/upload"
-import { useChild } from "@/context/selected-child"
+import { useChild, useUser } from "@/context/selected-child"
 import { useRouter } from 'next/navigation';
+import { filesPlan, isFeatureLocked } from "@/lib/plan"
+import { IconCrown, IconLockStar } from "@tabler/icons-react"
 
 export function ProfileForm({ module }: { module: ModuleType }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { selectedChild } = useChild()
+    const user = useUser()
     const router = useRouter();
     const fields = module.flyout.record.create.form.fields
 
@@ -319,7 +322,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                     name={name as keyof z.infer<typeof formSchema>}
                                     render={({ field: f }) => (
                                         <FormItem>
-                                            <FormLabel className="font-semibold leading-normal">{label}</FormLabel>
+                                            <FormLabel className="font-semibold leading-normal">{label}  {field.input.plan && isFeatureLocked(user.plan, field.input.plan) ? <div className="text-primary flex items-center gap-x-1"><IconCrown /><p>Upgrade to {field.input.plan}</p></div> : null}</FormLabel>
                                             <FormControl>
                                                 {type === "textarea" ? (
                                                     <Textarea
@@ -337,6 +340,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                         multiple
                                                         ref={fileInputRef}
                                                         className="border-none"
+                                                        disabled={field.input.plan ? isFeatureLocked(user.plan, field.input.plan) : false}
                                                     />
                                                 ) : type === "date" ? (
                                                     <Input

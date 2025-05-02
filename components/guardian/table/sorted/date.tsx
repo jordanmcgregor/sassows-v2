@@ -130,7 +130,6 @@ export function TableSortedSegmentedDate({ module, modules }: { module: ModuleTy
 // export function TableSortedSegmentedDate({ module }: { module: ModuleType }) {
 //     let directory: Directory = {};
 //     let [year, month, day] = [1, 1, 1]
-//     console.log(module.data)
 //     for (const record of module.data.records) {
 //         if (!record.date) {
 //             const [datePart] = record.created_at.split("T"); // gets "2025-04-11"

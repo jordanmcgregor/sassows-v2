@@ -6,8 +6,9 @@ import {
     SidebarInset,
     SidebarProvider,
 } from "@/components/ui/sidebar"
-import { ChildProvider } from '@/context/selected-child'
+import { OnboardedProvider } from '@/context/selected-child'
 import { headers } from 'next/headers'
+import { getMemoizedUser } from '@/utils/memoization/supabase/users/getMemoizedUser';
 
 export default async function PrivatePage({ children }: { children: React.ReactNode }) {
     const headersList = await headers()
@@ -19,9 +20,9 @@ export default async function PrivatePage({ children }: { children: React.ReactN
     if (error || !data?.user) {
         redirect('/sign-in')
     }
+    const user = await getMemoizedUser()
 
     const userId = data.user.id
-
     const { data: childrenData, error: childrenError } = await supabase
         .from('children')
         .select('*')
@@ -33,7 +34,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
     }
 
     return (
-        <ChildProvider initialChildren={childrenData}>
+        <OnboardedProvider initialChildren={childrenData} user={user}>
             <SidebarProvider
                 style={
                     {
@@ -56,6 +57,6 @@ export default async function PrivatePage({ children }: { children: React.ReactN
                     </div>
                 </SidebarInset>
             </SidebarProvider>
-        </ChildProvider>
+        </OnboardedProvider>
     )
 }

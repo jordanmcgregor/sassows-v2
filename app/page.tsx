@@ -21,7 +21,6 @@ export default async function Signup(props: {
   // const host = headersList.get('host') || '';
   // const protocol = headersList.get('x-forwarded-proto') || 'http';
   // const baseUrl = `${protocol}://${host}`;
-  // console.log(baseUrl)
 
   const searchParams = await props.searchParams;
   if ("success" in searchParams) {

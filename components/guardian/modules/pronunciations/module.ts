@@ -1,6 +1,7 @@
+import { filesPlan } from '@/lib/plan';
 import { ModuleType } from '@/types/modules/type'
 
-let module: ModuleType = {
+let feature: ModuleType = {
     metadata: {},
     name: 'pronunciation',
     view: {
@@ -12,6 +13,10 @@ let module: ModuleType = {
     header: {
         headline: "Baby's Early Pronunciations",
         description: "Document your little one's early attempts at pronouncing real-world words as they begin to develop their vocabulary.",
+        dialog: {
+            title: "What is a precious pronunciation?",
+            description: "A precious pronunciation is one of those adorable, unforgettable ways your child tries to say a word. Maybe “spaghetti” became “pasketti,” or “ambulance” turned into “amblience.” These sweet little mix-ups are more than cute—they’re a glimpse into their growing mind and unique personality. Capturing them now helps preserve the magic of how they saw (and spoke about) the world at that age—before they grew out of it and said things 'correctly.' These tiny slips are memory gold."
+        }
     },
     flyout: {
         record: {
@@ -51,7 +56,8 @@ let module: ModuleType = {
                                 name: "files",
                                 type: "files",
                                 required: false,
-                                placeholder: ""
+                                placeholder: "",
+                                plan: filesPlan
                             }
                         },
                     ]
@@ -73,7 +79,11 @@ let module: ModuleType = {
     },
     layout: {
         table: 'sortedSegmentedDate',
-    }
+    },
+    plan: 'premium',
+    icon: "IconBook",
+    url: "/pronunciations",
+    title: "Pronunciations"
 }
 
-export default module;
+export default feature;

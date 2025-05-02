@@ -12,7 +12,11 @@ export type ModuleType = {
     },
     header: {
         headline: string,
-        description: string
+        description: string,
+        dialog: {
+            title: string,
+            description: string,
+        }
     },
     flyout: {
         record: {
@@ -40,7 +44,11 @@ export type ModuleType = {
     },
     layout: {
         table: string | boolean
-    }
+    },
+    plan: Plan,
+    icon: "IconQuote" | "IconHeart" | "IconSchool" | "IconClockHeart" | "IconBook" | "IconRepeat"
+    url: "/cute-quotes" | "/favorite-things" | "/milestones" | "/precious-moments" | "/pronunciations" | "/tender-traditions",
+    title: "Cute Quotes" | "Favorite Things" | "Milestones" | "Precious Moments" | "Pronunciations" | "Tender Traditions"
 }
 
 export type Field = {
@@ -52,8 +60,11 @@ export type Field = {
         type: "text" | "textarea" | "dropdown" | "date" | "files",
         required: boolean,
         placeholder: string,
+        plan?: Plan
     }
 }
+
+export type Plan = "free" | "basic" | "premium"
 
 export type ModulesAllArray = [ModuleType, ModuleType, ModuleType, ModuleType, ModuleType, ModuleType]
 

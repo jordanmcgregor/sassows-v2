@@ -10,7 +10,6 @@ export function schemaDetermineConvert(record: any, modules: ModulesAllArray) {
             const fields = module.flyout.record.create.form.fields
             for (const field of fields) {
                 if (field.input.name in record && record[field.input.name] != '') {
-                    // console.log(record)
                     details.push({ title: field.label.title, description: record[field.input.name] })
                 }
             }

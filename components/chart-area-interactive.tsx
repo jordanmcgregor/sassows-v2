@@ -166,7 +166,6 @@ export function ChartAreaInteractive({ data }: { data: any }) {
     }
   }, [isMobile])
 
-  // console.log(data)
 
   const filteredData = data.filter((item: any) => {
     const date = new Date(item.date)
@@ -181,9 +180,6 @@ export function ChartAreaInteractive({ data }: { data: any }) {
     startDate.setDate(startDate.getDate() - daysToSubtract)
     return date >= startDate
   })
-
-  console.log("yo")
-  console.log(filteredData)
 
   return (
     <Card className="@container/card">

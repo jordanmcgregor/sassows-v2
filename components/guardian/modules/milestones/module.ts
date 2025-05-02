@@ -1,7 +1,7 @@
+import { filesPlan } from '@/lib/plan';
 import { ModuleType } from '@/types/modules/type';
-import { z, ZodTypeAny } from "zod"
 
-let module: ModuleType = {
+let feature: ModuleType = {
     metadata: {},
     name: 'milestone',
     view: {
@@ -13,6 +13,10 @@ let module: ModuleType = {
     header: {
         headline: "Magical Milestones & Firsts",
         description: "Celebrate the unforgettable 'firsts'—first smile, first steps, first words—that mark your little one’s journey of growth. These precious moments are the heartbeats of childhood, worthy of remembering forever.",
+        dialog: {
+            title: "What is a milestone?",
+            description: "A milestone is a magical moment in your child’s journey—a tiny step that marks their growth and discovery. It’s the first laugh, the first smile, or that sweet moment when they reach for you with tiny hands. These 'firsts' are little treasures that fill your heart with pride. Each one is a reminder of how quickly time passes and how lucky you are to witness them bloom into the person they’re becoming. Milestones are the moments you carry with you forever—the little things that make life’s big moments even more special.",
+        }
     },
     flyout: {
         record: {
@@ -118,7 +122,8 @@ let module: ModuleType = {
                                 name: "files",
                                 type: "files",
                                 required: false,
-                                placeholder: ""
+                                placeholder: "",
+                                plan: filesPlan
                             }
                         },
                     ]
@@ -136,11 +141,24 @@ let module: ModuleType = {
         foreign_key: "milestone",
     },
     data: {
-        records: [] as any[],
+        records: [],
     },
     layout: {
         table: 'sortedSegmentedDate',
-    }
+    },
+    plan: 'free',
+    icon: "IconSchool",
+    url: "/milestones",
+    title: "Milestones"
 }
 
-export default module;
+export const item = [{
+    plan: 'free',
+    icon: "IconSchool",
+    url: "/milestones",
+    title: "Milestones"
+}]
+
+export default feature;
+
+

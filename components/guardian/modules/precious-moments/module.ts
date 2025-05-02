@@ -1,7 +1,8 @@
-import { ModuleType } from '@/types/modules/type';
-import { z, ZodTypeAny } from "zod"
 
-let module: ModuleType = {
+import { filesPlan } from '@/lib/plan';
+import { ModuleType } from '@/types/modules/type';
+
+let feature: ModuleType = {
     metadata: {},
     name: 'moment_description',
     view: {
@@ -12,7 +13,11 @@ let module: ModuleType = {
     },
     header: {
         headline: "Precious Moments",
-        description: "Celebrate the fleeting sparks of wonder, joy, and connection that make childhood unforgettable. These tiny treasures—from giggles to messes—hold more love than words can say."
+        description: "Celebrate the fleeting sparks of wonder, joy, and connection that make childhood unforgettable. These tiny treasures—from giggles to messes—hold more love than words can say.",
+        dialog: {
+            title: "What is a precious moment?",
+            description: "A precious moment is one of those small, heartwarming memories that stays with you—the kind of moment that catches you off guard with its beauty or tenderness. Maybe it’s a spontaneous giggle, a sleepy hug, a thoughtful question, or the way sunlight hit their face just right. These moments are fleeting but powerful, and writing them down now means you’ll always have a way to return to them, long after the moment has passed.",
+        }
     },
     flyout: {
         record: {
@@ -118,7 +123,8 @@ let module: ModuleType = {
                                 name: "files",
                                 type: "files",
                                 required: false,
-                                placeholder: ""
+                                placeholder: "",
+                                plan: filesPlan
                             }
                         },
                     ]
@@ -140,7 +146,11 @@ let module: ModuleType = {
     },
     layout: {
         table: 'sortedSegmentedDate',
-    }
+    },
+    plan: 'premium',
+    icon: "IconClockHeart",
+    url: "/precious-moments",
+    title: "Precious Moments"
 }
 
-export default module;
+export default feature;

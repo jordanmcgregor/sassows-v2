@@ -18,23 +18,20 @@ type Directory = {
 
 export function TableSortedSegmentedAlphabet({ module, modules }: { module: ModuleType, modules: ModulesAllArray }) {
     const { selectedChild } = useChild()
-    console.log(selectedChild.id)
 
     if (!selectedChild?.id) return null
     if (!module || !module.data || !module.data.records) return null
 
-    console.log(module.data.records)
-
     const filteredRecords = module.data.records.filter(
         (record: any) => record.child_id === selectedChild.id
     )
-    console.log(filteredRecords)
+
     // const records = module.data.records;
     const directory: Directory = {};
 
     for (const record of filteredRecords) {
         const { details, activeModule } = schemaDetermineConvert(record, modules);
-        console.log(activeModule)
+
         let initial = ''
         if (activeModule) {
             initial = record[activeModule.view.records.primary][0]?.toUpperCase() ?? "#";
