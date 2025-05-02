@@ -322,7 +322,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                     name={name as keyof z.infer<typeof formSchema>}
                                     render={({ field: f }) => (
                                         <FormItem>
-                                            <FormLabel className="font-semibold leading-normal">{label}  {field.input.plan && isFeatureLocked(user.plan, field.input.plan) ? <div className="text-primary flex items-center gap-x-1"><IconCrown /><p>Upgrade to {field.input.plan}</p></div> : null}</FormLabel>
+                                            <FormLabel className="font-semibold leading-normal">{label}  {field.input.plan && isFeatureLocked(user.product_id, field.input.plan) ? <div className="text-primary flex items-center gap-x-1"><IconCrown /><p>Upgrade to {field.input.plan}</p></div> : null}</FormLabel>
                                             <FormControl>
                                                 {type === "textarea" ? (
                                                     <Textarea
@@ -340,7 +340,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                         multiple
                                                         ref={fileInputRef}
                                                         className="border-none"
-                                                        disabled={field.input.plan ? isFeatureLocked(user.plan, field.input.plan) : false}
+                                                        disabled={field.input.plan ? isFeatureLocked(user.product_id, field.input.plan) : false}
                                                     />
                                                 ) : type === "date" ? (
                                                     <Input
