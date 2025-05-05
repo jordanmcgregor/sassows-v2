@@ -20,3 +20,16 @@ self.addEventListener('push', function (event) {
     event.notification.close()
     event.waitUntil(clients.openWindow('<https://sassows.vercel.app>'))
   })
+
+  self.addEventListener('install', (event) => {
+    console.log('[Service Worker] Installed');
+    self.skipWaiting(); // Optional: take control immediately
+  });
+  
+  self.addEventListener('activate', (event) => {
+    console.log('[Service Worker] Activated');
+  });
+  
+  self.addEventListener('fetch', (event) => {
+    // Optional: handle caching here
+  });
