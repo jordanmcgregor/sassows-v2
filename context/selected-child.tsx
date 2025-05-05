@@ -20,14 +20,20 @@ type ChildContextType = {
 const ChildContext = createContext<ChildContextType | undefined>(undefined);
 
 
-type User = {
-  product_id: string;
+export type User = {
+  products: { id: string, name: string }[]
   // extend with more fields as needed
 };
-// Context for user
+
 type UserContextType = {
-  user: User;
+  products: { id: string, name: string }[]
+  // extend with more fields as needed
 };
+
+// Context for user
+// type UserContextType = {
+//   user: User;
+// };
 const UserContext = createContext<User | undefined>(undefined);
 
 // // 4. Provider component

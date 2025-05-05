@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default async function AboveFold({ module }: { module: ModuleType }) {
     const user = await getMemoizedUser()
-    const locked = isModuleLocked(user.product_id, module.plan)
+    // const locked = isModuleLocked(user.product_id, module.plan)
 
     return (
         <>
@@ -41,16 +41,17 @@ export default async function AboveFold({ module }: { module: ModuleType }) {
                     <Sheet>
                         <SheetTrigger asChild>
                             <div>
-                                {locked ?
+                                {/* {locked ? */}
 
-                                    <Button variant={"link"} asChild>
-                                        <Link href="/home"><IconComet /> Upgrade to Pro</Link>
-                                    </Button>
-                                    :
-                                    <Button >
-                                        New {module.title.replace(/s$/, '')} {locked ? <IconLockStar /> : null}
-                                    </Button>
-                                }
+                                {/* <Button variant={"link"} asChild>
+                                    <Link href="/home"><IconComet /> Upgrade to Pro</Link>
+                                </Button>
+                                : */}
+                                <Button >
+                                    New {module.title.replace(/s$/, '')}
+                                    {/* {locked ? <IconLockStar /> : null} */}
+                                </Button>
+                                {/* } */}
                             </div>
                         </SheetTrigger>
                         <SheetContent>

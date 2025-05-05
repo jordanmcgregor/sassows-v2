@@ -222,10 +222,29 @@ import { uploadToS3 } from "@/utils/aws/s3/files/upload"
 import { useChild, useUser } from "@/context/selected-child"
 import { useRouter } from 'next/navigation';
 import { filesPlan, isFeatureLocked } from "@/lib/plan"
-import { IconCrown, IconLockStar } from "@tabler/icons-react"
+import { IconAlertSquare, IconCrown, IconLockStar } from "@tabler/icons-react"
+import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
+} from "@/components/ui/alert"
+
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 export function ProfileForm({ module }: { module: ModuleType }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [updgradeDialogOpen, setUpdgradeDialogOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { selectedChild } = useChild()
     const user = useUser()
@@ -287,12 +306,19 @@ export function ProfileForm({ module }: { module: ModuleType }) {
             }
 
             form.reset();
-        } catch (error: any) {
-            console.error('Form submission error:', error.message);
-            alert(`Error: ${error.message}`);
-        } finally {
             setIsSubmitting(false);
             router.refresh();
+        } catch (error: any) {
+            // console.error('Form submission error:', error.message);
+            if (error.message.includes("Monthly limit exceeded")) {
+                setUpdgradeDialogOpen(true)
+            }
+            setIsSubmitting(false);
+            // alert(`Error: ${error.message}`);
+        } finally {
+            // form.reset();
+            // setIsSubmitting(false);
+            // router.refresh();
         }
     }
 
@@ -304,6 +330,35 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                     <div className="animate-spin rounded-full border-t-4 border-b-4 border-gray-900 h-12 w-12" />
                 </div>
             )}
+
+            <Dialog open={updgradeDialogOpen} onOpenChange={() => updgradeDialogOpen ? setUpdgradeDialogOpen(false) : setUpdgradeDialogOpen(true)}>
+                <DialogTrigger asChild>
+                    {/* Optional button to trigger the dialog */}
+                    {/* <Button>Yo </Button> */}
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Monthly Limit Exceeded</DialogTitle>
+                        <Alert className="text-primary">
+                            <IconAlertSquare className="h-4 w-4 text-primary!" />
+                            <AlertTitle>Oops! You've hit your {(user.products as any).name} limit for...</AlertTitle>
+                            <AlertDescription>
+                                {/* To keep adding components to your app, consider upgrading your plan or wait until your usage resets. */}
+                                <span className="capitalize">{module.title}</span>
+                            </AlertDescription>
+                        </Alert>
+                        <DialogDescription>
+                            Childhood flies by — upgrade to capture even more of the laughter, little voices, first words, and favorite things.
+                            When you upgrade, you can preserve every precious detail and build a legacy of love they'll cherish forever.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button className="w-full" variant="default" asChild>
+                            <Link href="/upgrade">Upgrade Now</Link>
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             <Form {...form}>
                 <form
@@ -322,7 +377,8 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                     name={name as keyof z.infer<typeof formSchema>}
                                     render={({ field: f }) => (
                                         <FormItem>
-                                            <FormLabel className="font-semibold leading-normal">{label}  {field.input.plan && isFeatureLocked(user.product_id, field.input.plan) ? <div className="text-primary flex items-center gap-x-1"><IconCrown /><p>Upgrade to {field.input.plan}</p></div> : null}</FormLabel>
+                                            {/* <FormLabel className="font-semibold leading-normal">{label}  {field.input.plan && isFeatureLocked(user.product_id, field.input.plan) ? <div className="text-primary flex items-center gap-x-1"><IconCrown /><p>Upgrade to {field.input.plan}</p></div> : null}</FormLabel> */}
+                                            <FormLabel className="font-semibold leading-normal">{label}</FormLabel>
                                             <FormControl>
                                                 {type === "textarea" ? (
                                                     <Textarea
@@ -340,7 +396,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                         multiple
                                                         ref={fileInputRef}
                                                         className="border-none"
-                                                        disabled={field.input.plan ? isFeatureLocked(user.product_id, field.input.plan) : false}
+                                                    // disabled={field.input.plan ? isFeatureLocked(user.product_id, field.input.plan) : false}
                                                     />
                                                 ) : type === "date" ? (
                                                     <Input
@@ -374,8 +430,57 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                             {isSubmitting ? 'Submitting...' : 'Submit'}
                         </Button>
                     </div>
-                </form>
-            </Form>
-        </div>
+                </form >
+            </Form >
+        </div >
+    )
+
+
+
+
+
+
+    function DialogDemo({ module }: { module: ModuleType }) {
+        const [updgradeDialogOpen, setUpdgradeDialogOpen] = useState(false);
+        return (
+            <Dialog open={updgradeDialogOpen} onOpenChange={() => updgradeDialogOpen ? setUpdgradeDialogOpen(false) : setUpdgradeDialogOpen(true)}>
+                <DialogTrigger asChild>
+                    {/* Optional button to trigger the dialog */}
+                    <Button>Yo </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Make Every Moment Last</DialogTitle>
+                        <AlertDemo module={module} />
+                        <DialogDescription>
+                            Childhood flies by — upgrade to capture even more of the laughter, little voices, first words, and favorite things.
+                            When you upgrade, you can preserve every precious detail and build a legacy of love they'll cherish forever.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button className="w-full" variant="default" asChild>
+                            <Link href="/upgrade">Upgrade Now</Link>
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        )
+    }
+}
+
+import { Terminal, CircleAlert } from "lucide-react"
+
+
+
+export function AlertDemo({ module }: { module: ModuleType }) {
+    return (
+        <Alert className="text-primary">
+            <IconAlertSquare className="h-4 w-4 text-primary!" />
+            <AlertTitle>Oops! You've hit your monthly limit for...</AlertTitle>
+            <AlertDescription>
+                {/* To keep adding components to your app, consider upgrading your plan or wait until your usage resets. */}
+                <span className="capitalize">{module.title}</span>
+            </AlertDescription>
+        </Alert>
     )
 }
