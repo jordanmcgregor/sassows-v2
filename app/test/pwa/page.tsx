@@ -99,6 +99,7 @@ export default function InstallButton() {
                 </div>
             )}
             <img src="/splashscreens/apple-splash-2048-2732.jpg" alt="" />
+            <p>yo yo yo</p>
         </div>
 
     );
