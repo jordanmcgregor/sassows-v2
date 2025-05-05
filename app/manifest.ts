@@ -10,26 +10,30 @@ export default function manifest(): MetadataRoute.Manifest {
         background_color: '#ffffff',
         theme_color: '#ffffff',
         icons: [
-            //   {
-            //     src: '/app-icon.png',
-            //     sizes: '192x192',
-            //     type: 'image/png',
-            //   },
-            //   {
-            //     src: '/app-icon.png',
-            //     sizes: '512x512',
-            //     type: 'image/png',
-            //   },
             {
-                src: '/app-icon.png',
-                sizes: '480x480',
-                type: 'image/png',
+                "src": "/splashscreens/manifest-icon-192.maskable.png",
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "any"
             },
             {
-                src: '/app-icon.png',
-                sizes: '512x512',
-                type: 'image/png',
+                "src": "/splashscreens/manifest-icon-192.maskable.png",
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "maskable"
             },
+            {
+                "src": "/splashscreens/manifest-icon-512.maskable.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any"
+            },
+            {
+                "src": "/splashscreens/manifest-icon-512.maskable.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "maskable"
+            }
         ],
     }
 }
