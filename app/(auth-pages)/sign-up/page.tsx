@@ -1,20 +1,15 @@
-import { signUpAction } from "@/app/actions";
 import { FormMessage, Message } from "@/components/form-message";
-import { SubmitButton } from "@/components/submit-button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
-
-import { GalleryVerticalEnd } from "lucide-react"
-
-import { LoginForm } from "@/components/login-form"
 import { IconFlower } from "@tabler/icons-react"
 import { SignupForm } from "@/components/signup-form"
 
 export default async function Signup(props: {
-  searchParams: Promise<Message>;
+  searchParams: Promise<Message>
 }) {
+  // const headersList = await headers();
+  // const host = headersList.get('host') || '';
+  // const protocol = headersList.get('x-forwarded-proto') || 'http';
+  // const baseUrl = `${protocol}://${host}`;
+
   const searchParams = await props.searchParams;
   if ("success" in searchParams) {
     return (

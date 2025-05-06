@@ -27,7 +27,7 @@ export default function CardWithForm() {
                     </CardContent>
                     <CardFooter>
                         <Button className="w-full" asChild>
-                            <Link href="/onboarding/get-started">Add a Child</Link>
+                            <Link href="/onboarding/add-children">Add a Child</Link>
                         </Button>
                     </CardFooter>
                 </Card>

@@ -1,106 +1,56 @@
-'use client';
-import { useEffect, useState } from 'react';
+import AndroidPWAInstructions from '@/components/guardian/onboarding/pwa/download/android'
+import IphonePWAInstructions from '@/components/guardian/onboarding/pwa/download/iphone'
+import { headers } from 'next/headers'
 
-export default function InstallButton() {
-    const [isAndroid, setIsAndroid] = useState(false);
-    const [isIos, setIsIos] = useState(false);
-    const [isSafari, setIsSafari] = useState(false);
-    const [isChrome, setIsChrome] = useState(false);
+function detectOS(ua: string): string {
+    if (/iPhone|iPad|iPod/.test(ua)) return 'iOS'
+    if (/Android/.test(ua)) return 'Android'
+    if (/Windows NT/.test(ua)) return 'Windows'
+    if (/Mac OS X/.test(ua) && !/iPhone|iPad|iPod/.test(ua)) return 'macOS'
+    if (/Linux/.test(ua) && !/Android/.test(ua)) return 'Linux'
+    return 'Unknown'
+}
 
-    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-    const [showButton, setShowButton] = useState(true);
+function detectBrowser(ua: string): string {
+    if (/Edg\//.test(ua)) return 'Edge'
+    if (/Chrome\//.test(ua) && !/Edg\//.test(ua)) return 'chrome'
+    if (/CriOS/.test(ua)) return 'chrome'
+    if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'safari'
+    // if (/Firefox\//.test(ua)) return 'firefox'
+    // if (/MSIE|Trident/.test(ua)) return 'Internet Explorer'
+    return 'Unknown'
+}
 
-    useEffect(() => {
-        // Check for Android and iOS
-        const userAgent = navigator.userAgent.toLowerCase();
-        setIsAndroid(userAgent.includes('android'));
-        setIsIos(userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('ipod'));
+export default async function Page() {
+    const headersList = await headers()
+    const ua = headersList.get('user-agent') || ''
 
-        // Check for Safari and Chrome
-        setIsSafari(/safari/i.test(userAgent) && !/chrome/i.test(userAgent));
-        setIsChrome(/chrome|crios/i.test(userAgent) && /iphone|ipad|ipod/i.test(userAgent));
+    const os = detectOS(ua)
+    const browser = detectBrowser(ua)
 
-        // Listen for the beforeinstallprompt event (Android and Desktop)
-        const handler = (e: any) => {
-            e.preventDefault();
-            setDeferredPrompt(e);
-            setShowButton(true);
-        };
+    console.log(os == 'Android')
 
-        window.addEventListener('beforeinstallprompt', handler);
+    if (os == 'iOS') {
+        return (
+            <>
+                {/* <p><strong>Operating System:</strong> {os}</p>
+                <p><strong>Browser:</strong> {browser}</p> */}
+                <IphonePWAInstructions browser={browser} />
+            </>
+        )
+    }
+    else if (os == 'Android') {
+        return (
+            <AndroidPWAInstructions />
+        )
 
-        return () => window.removeEventListener('beforeinstallprompt', handler);
-    }, []);
-
-    const handleInstall = async () => {
-        if (!deferredPrompt) return;
-
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-
-        if (outcome === 'accepted') {
-            console.log('PWA installed');
-        } else {
-            console.log('PWA installation declined');
-        }
-
-        setDeferredPrompt(null);
-        setShowButton(false);
-    };
-
-    if (!showButton) return null;
-
-    return (
-        <div>
-            {/* For Android Devices */}
-            {isAndroid && (
-                <div>
-                    <button
-                        className="bg-blue-600 text-white px-4 py-2 rounded shadow"
-                        onClick={handleInstall}
-                    >
-                        Install App
-                    </button>
-                    <p>Tap the button to install the app to your Android device.</p>
-                </div>
-            )}
-
-            {/* For iOS Devices */}
-            {isIos && !isSafari && !isChrome && (
-                <div>
-                    <h2>Install on iOS (Other Browsers)</h2>
-                    <p>To install the PWA, please open this page in Safari or Chrome.</p>
-                </div>
-            )}
-
-            {/* For Safari on iOS */}
-            {isIos && isSafari && false && (
-                <div>
-                    <h2>Install on Safari for iOS</h2>
-                    <ol>
-                        <li>1. Open this page in Safari.</li>
-                        <li>2. Tap the <strong>Share</strong> button (the square with an arrow pointing up).</li>
-                        <li>3. Scroll down and tap <strong>Add to Home Screen</strong>.</li>
-                        <li>4. Follow the on-screen instructions to add the app to your home screen.</li>
-                    </ol>
-                </div>
-            )}
-
-            {/* For Chrome on iOS */}
-            {isIos && isChrome && false && (
-                <div>
-                    <h2>Install on Chrome for iOS</h2>
-                    <ol>
-                        <li>1. Open this page in Chrome.</li>
-                        <li>2. Tap the <strong>Share</strong> button (the square with an arrow pointing up).</li>
-                        <li>3. Tap <strong>Add to Home Screen</strong>.</li>
-                        <li>4. Follow the on-screen instructions to add the app to your home screen.</li>
-                    </ol>
-                </div>
-            )}
-            <img src="/splashscreens/apple-splash-2048-2732.jpg" alt="" />
-            <p>yo yo yo</p>
-        </div>
-
-    );
+    }
+    else {
+        return (
+            <div>
+                <p><strong>Operating System:</strong> {os}</p>
+                <p><strong>Browser:</strong> {browser}</p>
+            </div>
+        )
+    }
 }
