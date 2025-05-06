@@ -29,11 +29,11 @@ const faqs = [
       answer:
         'Life gets busy — we get it. You can add entries whenever you have time. You can even backdate moments so nothing is lost.',
     },
-    {
-      question: 'Can I add photos or audio?',
-      answer:
-        'Yes! You can attach photos to memories and even record your child’s voice to preserve those priceless pronunciations and sweet sayings.',
-    },
+    // {
+    //   question: 'Can I add photos or audio?',
+    //   answer:
+    //     'Yes! You can attach photos to memories and even record your child’s voice to preserve those priceless pronunciations and sweet sayings.',
+    // },
   ],
   [
     {
@@ -41,11 +41,11 @@ const faqs = [
       answer:
         'Your memories are precious, and we treat them that way. All your data is encrypted and stored securely. We never sell your information.',
     },
-    {
-      question: 'Can I export or print a journal later?',
-      answer:
-        'Yes, you’ll be able to export your entries or even create a printed keepsake journal to treasure forever.',
-    },
+    // {
+    //   question: 'Can I export or print a journal later?',
+    //   answer:
+    //     'Yes, you’ll be able to export your entries or even create a printed keepsake journal to treasure forever.',
+    // },
     {
       question: 'What makes this different from other baby tracking apps?',
       answer:

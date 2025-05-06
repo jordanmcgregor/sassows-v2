@@ -11,6 +11,7 @@ import Link from "next/link";
 
 export default async function AboveFold({ module }: { module: ModuleType }) {
     const user = await getMemoizedUser()
+    console.log(user)
     // const locked = isModuleLocked(user.product_id, module.plan)
 
     return (

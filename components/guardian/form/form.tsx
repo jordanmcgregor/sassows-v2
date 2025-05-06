@@ -378,7 +378,8 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                     render={({ field: f }) => (
                                         <FormItem>
                                             {/* <FormLabel className="font-semibold leading-normal">{label}  {field.input.plan && isFeatureLocked(user.product_id, field.input.plan) ? <div className="text-primary flex items-center gap-x-1"><IconCrown /><p>Upgrade to {field.input.plan}</p></div> : null}</FormLabel> */}
-                                            <FormLabel className="font-semibold leading-normal">{label}</FormLabel>
+                                            <FormLabel className="font-semibold leading-normal">{label}  {(user.products as any).id == 'free' && type === "files" ? <div className="text-primary flex items-center gap-x-1"><IconCrown /><p>Upgrade to {field.input.plan}</p></div> : null}</FormLabel>
+                                            {/* <FormLabel className="font-semibold leading-normal">{label}</FormLabel> */}
                                             <FormControl>
                                                 {type === "textarea" ? (
                                                     <Textarea
@@ -396,7 +397,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                         multiple
                                                         ref={fileInputRef}
                                                         className="border-none"
-                                                    // disabled={field.input.plan ? isFeatureLocked(user.product_id, field.input.plan) : false}
+                                                        disabled={(user.products as any).id == 'free' ? true : false}
                                                     />
                                                 ) : type === "date" ? (
                                                     <Input
