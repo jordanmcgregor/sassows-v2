@@ -233,7 +233,7 @@ export default async function IndexPage() {
                                                     return (
                                                         <li key={feature.table_name} className="flex items-center gap-x-2">
                                                             <CheckIcon className="h-5 w-5 text-primary" aria-hidden="true" />
-                                                            {feature.insert_limit} <span className='capitalize'>{feature.table_name.replace("_", " ")} / month</span>
+                                                            {feature.insert_limit >= 100 ? 'Unlimted' : feature.insert_limit} <span className='capitalize'>{feature.table_name.replace("_", " ")} / month</span>
                                                         </li>
                                                     )
                                                 })}
