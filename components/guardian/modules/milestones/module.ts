@@ -138,7 +138,7 @@ let feature: ModuleType = {
     },
     supabase: {
         table: 'milestones',
-        foreign_key: "milestone",
+        foreign_key: "milestone_id",
     },
     data: {
         records: [],

@@ -127,7 +127,7 @@ let feature: ModuleType = {
     },
     supabase: {
         table: 'cute_quotes',
-        foreign_key: "quote_text",
+        foreign_key: "cute_quote_id",
     },
     data: {
         records: [] as any[],

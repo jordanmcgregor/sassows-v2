@@ -139,7 +139,7 @@ let feature: ModuleType = {
     },
     supabase: {
         table: 'tender_traditions',
-        foreign_key: "tradition_name",
+        foreign_key: "tender_tradition_id",
     },
     data: {
         records: [] as any[],

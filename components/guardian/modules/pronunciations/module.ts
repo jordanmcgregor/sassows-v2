@@ -72,7 +72,7 @@ let feature: ModuleType = {
     },
     supabase: {
         table: 'pronunciations',
-        foreign_key: "pronunciation",
+        foreign_key: "pronunciation_id",
     },
     data: {
         records: [] as any[],

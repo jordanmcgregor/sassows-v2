@@ -150,7 +150,7 @@ let feature: ModuleType = {
     },
     supabase: {
         table: 'favorite_things',
-        foreign_key: "favorite_item_name",
+        foreign_key: "favorite_thing_id",
     },
     data: {
         records: [] as any[],
