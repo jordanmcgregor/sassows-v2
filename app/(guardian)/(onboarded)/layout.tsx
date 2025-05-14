@@ -17,10 +17,18 @@ export default async function PrivatePage({ children }: { children: React.ReactN
     const supabase = await createClient()
     const { data, error } = await supabase.auth.getUser()
 
+    const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select(`products (
+                    id,
+                    name
+                    )`)
+        .single()
+
     if (error || !data?.user) {
         redirect('/sign-in')
     }
-    const user = await getMemoizedUser()
+    // const user = await getMemoizedUser()
 
     const userId = data.user.id
     const { data: childrenData, error: childrenError } = await supabase
@@ -34,7 +42,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
     }
 
     return (
-        <OnboardedProvider initialChildren={childrenData} user={user}>
+        <OnboardedProvider initialChildren={childrenData} user={userData}>
             <SidebarProvider
                 style={
                     {

@@ -13,6 +13,7 @@ export const signUpAction = async (formData: FormData) => {
   const host = headersList.get('host') || '';
   const protocol = headersList.get('x-forwarded-proto') || 'http';
   const baseUrl = `${protocol}://${host}`;
+  console.log(baseUrl)
 
   if (!email || !password) {
     return encodedRedirect(

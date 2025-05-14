@@ -18,8 +18,6 @@ export async function getMemoizedUser() {
             throw new Error(`Failed to fetch users: ${error.message}`);
         }
 
-        console.log(data)
-
         return data;
     });
 }

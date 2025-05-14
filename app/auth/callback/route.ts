@@ -11,10 +11,25 @@ export async function GET(request: Request) {
   const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
 
   if (code) {
+    // const supabase = await createClient();
+    // await supabase.auth.exchangeCodeForSession(code);
+
     const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
+
+    // 🛠 Fetch user after exchanging code
+    const { data: { user }, error } = await supabase.auth.getUser();
+    console.log(user)
+    console.log("")
+
+    if (error || !user) {
+      console.error('Error fetching user after code exchange:', error);
+      return NextResponse.redirect(`${origin}/error`);
+    }
   }
 
+  console.log(redirectTo)
+  console.log("")
   if (redirectTo) {
     return NextResponse.redirect(`${origin}${redirectTo}`);
   }

@@ -10,14 +10,15 @@ const title = 'Cute Quotes'
 
 export default async function CuteQuotes() {
     const supabase = await createClient();
-    const { data: records } = await supabase
+
+    const { data: records }: { data: Record<string, any>[] | null } = await supabase
         .from(module.supabase.table)
         .select(`
             *,
             media:media (id,media_url,media_type,filename)
             `
-        );
 
+        );
     // Make sure we're not modifying an undefined property
     if (module && !module.data) {
         module.data = { records: [] };
