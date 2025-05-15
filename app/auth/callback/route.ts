@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
       if (exchangeError) {
-        console.error('Error exchanging code for session:', exchangeError);
+        console.log('Error exchanging code for session:', exchangeError);
         return NextResponse.redirect(`${origin}/error`);
       }
 
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
 
       if (userError) {
-        console.error('Error fetching user after code exchange:', userError);
+        console.log('Error fetching user after code exchange:', userError);
         return NextResponse.redirect(`${origin}/error`);
       }
 
