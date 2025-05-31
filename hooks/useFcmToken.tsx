@@ -93,7 +93,7 @@ const useFcmToken = () => {
     const setupListener = async () => {
       if (!token) return; // Exit if no token is available.
 
-      console.log(`onMessage registered with token ${token}`);
+      alert(`onMessage registered with token ${token}`);
       const m = await messaging();
       if (!m) return;
 
