@@ -6,6 +6,7 @@ self.addEventListener('push', function (event) {
       icon: data.icon || '/app-icon.png',
       badge: '/app-icon.png',
       vibrate: [100, 50, 100],
+      requireInteraction: true,
       data: {
         dateOfArrival: Date.now(),
         primaryKey: '2',
@@ -14,7 +15,7 @@ self.addEventListener('push', function (event) {
     event.waitUntil(self.registration.showNotification(data.title, options))
   }
 })
- 
+
 self.addEventListener('notificationclick', function (event) {
   console.log('Notification click received.')
   event.notification.close()
