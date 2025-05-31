@@ -52,6 +52,13 @@ export function NavMain() {
               </SidebarMenuItem>
             )
           })}
+          <SidebarMenuItem >
+            <SidebarMenuButton >
+              <Link href={'/test/service-worker'} className="w-full">
+                <span>Service Worker</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
