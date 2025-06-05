@@ -4,6 +4,7 @@ import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
 import { SiteHeader } from "@/components/site-header"
 import { createClient } from '@/utils/supabase/server';
+import Subscriptions from '@/components/guardian/realtime/subscriptions'
 
 import datum from "./data.json"
 import { getMemoizedUser } from "@/utils/memoization/supabase/users/getMemoizedUser"
@@ -11,11 +12,14 @@ const title = 'Home'
 
 export default async function Page() {
   const supabase = await createClient();
-  const user = getMemoizedUser()
-  const { data, error } = await supabase.from('my_entries_view').select();
+  // const user = getMemoizedUser()
+  const { data, error } = await supabase.from('my_entries_view')
+    .select()
+    .order('created_at', { ascending: true })
 
   return (
     <>
+      {/* <Subscriptions /> */}
       <SectionCards data={data} />
       {/* <div className="px-4 lg:px-6">
         <ChartAreaInteractive />

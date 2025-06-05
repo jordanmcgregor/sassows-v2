@@ -9,6 +9,7 @@ import {
 import { OnboardedProvider } from '@/context/selected-child'
 import { headers } from 'next/headers'
 import { getMemoizedUser } from '@/utils/memoization/supabase/users/getMemoizedUser';
+import Subscriptions from '@/components/guardian/realtime/subscriptions'
 
 export default async function PrivatePage({ children }: { children: React.ReactNode }) {
     const headersList = await headers()
@@ -43,6 +44,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
 
     return (
         <OnboardedProvider initialChildren={childrenData} user={userData}>
+            <Subscriptions />
             <SidebarProvider
                 style={
                     {

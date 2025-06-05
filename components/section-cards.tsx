@@ -9,70 +9,322 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-// import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/utils/supabase/server';
 
 import { modules } from '@/components/guardian/modules/all'
 import { ModuleType } from "@/types/modules/type"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { ClockIcon, Flame } from "lucide-react"
+import { BoltIcon, FireIcon, KeyIcon, LockClosedIcon, TrophyIcon } from "@heroicons/react/20/solid"
+import Image from "next/image";
+import { Progress } from "@/components/ui/progress"
 
-export function SectionCards({ data }: { data: any }) {
-  // const supabase = await createClient();
-  // const { data: entries, error } = await supabase.from('my_entries_view').select()
-  // const data = entries || []
-  // console.log(data)
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import StreakCard from "./guardian/home/gamification/streak-card";
+
+function Header({
+  children,
+  text
+}: {
+  children?: React.ReactNode,
+  text: string
+}) {
+  return (
+    <div className="flex items-center justify-around mt-4">
+      <h1 className="text-2xl font-bold w-full grid-cols-1">{text}</h1>
+      {children}
+    </div>
+  )
+}
+
+export async function SectionCards({ data }: { data: any }) {
+  const supabase = await createClient();
+  const { data: achievements, error: achievementError } = await supabase
+    .schema('gamification')
+    .from('achievements')
+    .select()
+    .order('xp_reward', { ascending: true })
+
+  const now = new Date()
+
+  // Format today's date as YYYY-MM-DD
+  const todayString = now.toISOString().split('T')[0] // e.g., "2025-06-03"
+  const { data: quest, error: questError } = await supabase
+    .schema('gamification')
+    .from('daily_quests')
+    .select()
+    .eq('date', todayString)
+    .single()
+
+  let { data: streak, error: streakError } = await supabase
+    .schema('gamification')
+    .from('daily_streaks')
+    .select()
+    .single()
+
+  if (streakError) {
+    if (streakError.code === 'PGRST116') {
+      console.warn("No streak found or multiple streaks returned");
+      // You can return null or fallback logic here
+      let { data: streakCreated, error: streakError } = await supabase
+        .schema('gamification')
+        .from('daily_streaks')
+        .insert([{ current_streak: 0, longest_streak: 0, last_entry_date: new Date(0).toISOString().split("T")[0] }])
+        .select()
+        .single()
+      streak = streakCreated
+      console.log(streak)
+    } else {
+      console.error("Unexpected error fetching streak:", streakError.message)
+      // Optional: throw or handle more specific errors
+    }
+  }
+
+
+  console.log(streak)
+  const today = new Date().toISOString().split("T")[0] // "2025-06-04"
+  const isToday = streak.last_entry_date === today
+
+
+  // Calculate how many hours are left in the day
+  const endOfDay = new Date(now)
+  endOfDay.setHours(23, 59, 59, 999)
+
+  const msLeft = endOfDay.getTime() - now.getTime()
+  const hoursLeft = Math.floor(msLeft / (1000 * 60 * 60)) + 1
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription className="capitalize">Journaling Streak</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {calculateDailyStreak(data)} {/* Display the count */}
-          </CardTitle>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Days in a row
-          </div>
-          {/* <div className="text-muted-foreground">All time</div> */}
-          <Button asChild>
-            {/* <Link className="capitalize w-full mt-4" href={module.supabase.table.replace('_', '-')}>Add New {module.supabase.table.replace('_', ' ').replace(/s$/, '')}</Link> */}
-          </Button>
-        </CardFooter>
-      </Card>
-      {modules.map((module: ModuleType, index: any) => {
-        // Initialize count for each module
-        let count = 0;
-
-        // Loop over data and increment count for matching records
-        data.forEach((record: any) => {
-          if (record.table_name === module.supabase.table) {
-            count += 1; // Increment count for matching record
-          }
-        });
-
-        return (
-          <Card className="@container/card" key={index}>
-            <CardHeader>
-              <CardDescription className="capitalize">{module.supabase.table.replace('_', ' ')}</CardDescription>
-              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                {count} {/* Display the count */}
-              </CardTitle>
-            </CardHeader>
-            <CardFooter className="flex-col items-start gap-1.5 text-sm">
-              <div className="line-clamp-1 flex gap-2 font-medium">
-                Total {module.supabase.table.replace('_', ' ')} Created
+      <Header text={"Overview"}>
+      </Header>
+      <div className="grid grid-cols-2 gap-4">
+        {/* ------------------------------------------------------------------- */}
+        {/* --------------------------- Streak Card --------------------------- */}
+        {/* ------------------------------------------------------------------- */}
+        <StreakCard streak={streak} />
+        {/* ---------------------------------------------------------------------- */}
+        {/* --------------------------- XP Points Card --------------------------- */}
+        {/* ---------------------------------------------------------------------- */}
+        <Card className="@container/card bg-white gap-0">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+              <div className="flex items-center">
+                <BoltIcon className={`size-8 ${calculateDailyStreak(data) > 0 ? "text-yellow-400" : "text-gray-400"}`} />
+                <span className="pl-0.5">
+                  {calculateDailyStreak(data)} {/* Display the count */}
+                </span>
               </div>
-              <div className="text-muted-foreground">All time</div>
-              <Button asChild>
-                <Link className="capitalize w-full mt-4" href={module.supabase.table.replace('_', '-')}>Add New {module.supabase.table.replace('_', ' ').replace(/s$/, '')}</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        );
-      })}
-    </div>
+            </CardTitle>
+          </CardHeader>
+          <CardFooter className="flex-col items-start gap-1.5 text-sm">
+            <div className="line-clamp-1 flex gap-2 font-medium">
+              Total XP
+            </div>
+          </CardFooter>
+        </Card>
+        {/* ------------------------------------------------------------------- */}
+        {/* --------------------------- League Card --------------------------- */}
+        {/* ------------------------------------------------------------------- */}
+        <Card className="@container/card bg-white gap-0">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-gray-300">
+              <div className="flex items-center">
+                <KeyIcon className={`size-8 text-gray-400"}`} />
+                {/* <span className="pl-0.5 text-md">
+                  None
+                </span> */}
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardFooter className="flex-col items-start gap-1.5 text-sm text-gray-300">
+            <div className="line-clamp-1 flex gap-2 font-medium">
+              League
+            </div>
+          </CardFooter>
+        </Card>
+        {/* ------------------------------------------------------------------------------- */}
+        {/* --------------------------- Top Three Finishes Card --------------------------- */}
+        {/* ------------------------------------------------------------------------------- */}
+        <Card className="@container/card bg-white gap-0">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-gray-300">
+              <div className="flex items-center">
+                <TrophyIcon className={`size-8 text-gray-400"}`} />
+                <span className="pl-0.5">
+                  {calculateDailyStreak(data)} {/* Display the count */}
+                </span>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardFooter className="flex-col items-start gap-1.5 text-sm text-gray-300">
+            <div className="line-clamp-1 flex gap-2 font-medium">
+              Top 3 Finishes
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+      <Header text={"Daily Quest"}>
+        <Button variant="link" className="uppercase">
+          <ClockIcon />{hoursLeft} Hours
+        </Button>
+      </Header>
+      <div className="grid grid-cols-1 gap-4">
+
+        <Card className="@container/card bg-white gap-0">
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold tabular-nums @[250px]/card:text-3xl">
+              <div className="text-sm grid gap-4">
+                <span>{quest.prompt}</span>
+                <Progress value={3} />
+                <Button className="w-full">Claim {quest.xp_reward} Bonus XP Points</Button>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardFooter className="flex-col items-start gap-1.5 text-sm w-full">
+            <div className="line-clamp-1 flex justify-center w-full text-center gap-2 font-medium text-gray-300">
+
+
+            </div>
+          </CardFooter>
+        </Card>
+
+      </div>
+      <Header text={"Monthly Badges"}>
+        <Button variant="link" className="uppercase">
+          see all
+        </Button>
+      </Header>
+      <div className="grid grid-cols-3 gap-4">
+        {['June', 'July', 'August'].map((month: string, index: any) => {
+          return (
+            <Card key={month} className="@container/card bg-white gap-0">
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                  <div className="flex justify-center">
+                    <LockClosedIcon className={`size-8 text-gray-300`} />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="line-clamp-1 flex justify-center w-full text-center gap-2 font-medium text-gray-300">
+                  <span>{month}</span>
+                </div>
+              </CardFooter>
+            </Card>
+          )
+        }
+        )
+        }
+
+      </div>
+
+      <Header text={"Achievements"}>
+        <Button variant="link" className="uppercase">
+          <ClockIcon />{hoursLeft} Hours
+        </Button>
+      </Header>
+      <div className="grid grid-cols-3 gap-4">
+        {achievements?.map((achievement, index: any) => {
+          // const Icon = icons[achievement.icon as keyof typeof icons];
+          return (
+            <AlertDialog key={achievement.id}>
+              <AlertDialogTrigger>
+                <Card className="@container/card bg-white gap-0">
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                      <div
+                        className="size-12 bg-center bg-no-repeat bg-contain filter grayscale"
+                        style={{
+                          backgroundImage: `url(/achievements/svgs/colored/${achievement.icon}.svg)`,
+                        }}
+                      />
+                      {/* <div className="flex justify-center">
+                    <Image width={500} height={500} src={'/achievements/svgs/colored/' + achievement.icon + '.svg'} alt={''} className={`size-64 grayscale`} />
+                  </div> */}
+                    </CardTitle>
+                  </CardHeader>
+                  {/* <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                {achievement.description}
+              </CardFooter> */}
+                </Card>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    <Image width={500} height={500} src={'/achievements/svgs/colored/' + achievement.icon + '.svg'} alt={''} className={`w-full grayscale`} />
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {/* <Header link={false}>{achievement.name}</Header> */}
+                    <span className="flex flex-col">
+                      <span className="text-3xl">
+                        {achievement.name}
+                      </span>
+                      <span>
+                        {achievement.description}
+                      </span>
+                    </span>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Close</AlertDialogCancel>
+                  {/* <AlertDialogAction>Continue</AlertDialogAction> */}
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+          )
+        }
+        )
+        }
+
+      </div>
+      <Header text={"My Entries"}>
+      </Header>
+      {
+        modules.map((module: ModuleType, index: any) => {
+          // Initialize count for each module
+          let count = 0;
+
+          // Loop over data and increment count for matching records
+          data.forEach((record: any) => {
+            if (record.table_name === module.supabase.table) {
+              count += 1; // Increment count for matching record
+            }
+          });
+
+          return (
+            <Card className="@container/card" key={index}>
+              <CardHeader>
+                <CardDescription className="capitalize">{module.supabase.table.replace('_', ' ')}</CardDescription>
+                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                  {count} {/* Display the count */}
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="line-clamp-1 flex gap-2 font-medium">
+                  Total {module.supabase.table.replace('_', ' ')} Created
+                </div>
+                <div className="text-muted-foreground">All time</div>
+                <Button asChild>
+                  <Link className="capitalize w-full mt-4" href={module.supabase.table.replace('_', '-')}>Add New {module.supabase.table.replace('_', ' ').replace(/s$/, '')}</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          );
+        })
+      }
+    </div >
   );
 }
 
@@ -115,4 +367,20 @@ function calculateDailyStreak(data: any) {
   }
 
   return streak;
+}
+
+function isMoreThanOneDayOld(date: string | Date) {
+  const entryDate = new Date(date)
+  const now = new Date()
+
+  // Normalize both dates to midnight (ignore time)
+  entryDate.setHours(0, 0, 0, 0)
+  now.setHours(0, 0, 0, 0)
+
+  const diffInMs = now.getTime() - entryDate.getTime()
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24)
+
+  console.log(diffInDays)
+
+  return diffInDays > 1
 }
