@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardAction,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -15,7 +16,7 @@ import { modules } from '@/components/guardian/modules/all'
 import { ModuleType } from "@/types/modules/type"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ClockIcon, Flame } from "lucide-react"
+import { CheckCircleIcon, ClockIcon, Flame } from "lucide-react"
 import { BoltIcon, FireIcon, KeyIcon, LockClosedIcon, TrophyIcon } from "@heroicons/react/20/solid"
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress"
@@ -32,6 +33,43 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import StreakCard from "./guardian/home/gamification/streak-card";
+import { Span } from "next/dist/trace";
+import { TreasureChestAnimation5588 } from "@/app/test/motion/page";
+import { Separator } from "./ui/separator";
+import XPCard from "./guardian/home/gamification/xp-animation";
+
+const questCompletionMessages = [
+  "🎉 Quest complete! You're one step closer to earning that shiny monthly badge!",
+  "✅ You did it! Another quest down — your badge is practically cheering you on!",
+  "💪 That’s what we call consistency! Keep it up, champ.",
+  "🚀 Boom! You’re flying through this month’s quests.",
+  "🏆 Badge unlocked? Not yet. But you’re so on the way.",
+  "📅 Daily quest: DONE. This badge is gonna be epic!",
+  "✨ Another day, another win. Your badge progress looks amazing!",
+  "🌟 You journaled with heart today. Keep that momentum going!",
+  "🔥 You're on fire! Keep burning through these quests!",
+  "💖 That memory was worth gold — and XP! Badge progress: solid.",
+  "👏 You showed up today — and that’s how badges get earned!",
+  "🧠 Your brain? Crushing it. That badge? Getting closer.",
+  "🛡️ Another quest down. You’re building something beautiful.",
+  "🥳 Today’s quest? Owned. Badge? Within reach.",
+  "🌈 Look at you go! You’re painting a badge-worthy month!",
+  "🚨 Alert: User is dangerously close to monthly badge greatness.",
+  "🧭 You’re navigating these quests like a pro. Keep going!",
+  "🎯 Bullseye! Daily quest hit. Now go hit that badge!",
+  "🥇 You’re stacking wins. Your badge is basically guaranteed!",
+  "📖 Today’s entry adds one more page to your legend.",
+  "🐣 Daily quest hatched! This badge is gonna be a beauty.",
+  "✍️ Journaling like this is how legends earn badges.",
+  "🎇 Fireworks! You’ve made today count.",
+  "🎶 That was music to your badge’s ears. One step closer!",
+  "⏳ Every quest counts. You’re right on schedule.",
+  "🍀 Another lucky step on the path to badge glory.",
+  "🌞 You showed up — and that matters. Badge on the horizon!",
+  "🥰 You’re building a treasure trove of memories — and a badge.",
+  "💎 That entry was a gem. Your badge sparkle just got brighter.",
+  "🏁 Today? Handled. Badge finish line? Getting real close."
+];
 
 function Header({
   children,
@@ -47,6 +85,7 @@ function Header({
     </div>
   )
 }
+
 
 export async function SectionCards({ data }: { data: any }) {
   const supabase = await createClient();
@@ -67,11 +106,36 @@ export async function SectionCards({ data }: { data: any }) {
     .eq('date', todayString)
     .single()
 
+  const { data: userDailyQuests, error: userDailyQuestsError } = await supabase
+    .schema('gamification')
+    .from('user_daily_quests')
+    .select()
+    .eq('quest_id', quest.id)
+    .single()
+
   let { data: streak, error: streakError } = await supabase
     .schema('gamification')
-    .from('daily_streaks')
+    .from('user_daily_streaks')
     .select()
     .single()
+
+  let { data: userXp, error: userXpError } = await supabase
+    .schema('gamification')
+    .from('user_xp')
+    .select()
+    .single()
+
+  let { data: userMonthlyBadges, error: userMonthlyBadgesError } = await supabase
+    .schema('gamification')
+    .from('user_monthly_badges_view')
+    .select()
+    .order('month', { ascending: true })
+
+  let { data: userAchievements, error: userAchievementsError } = await supabase
+    .schema('gamification')
+    .from('user_achievements_view')
+    .select()
+    .order('xp', { ascending: true })
 
   if (streakError) {
     if (streakError.code === 'PGRST116') {
@@ -84,15 +148,12 @@ export async function SectionCards({ data }: { data: any }) {
         .select()
         .single()
       streak = streakCreated
-      console.log(streak)
     } else {
       console.error("Unexpected error fetching streak:", streakError.message)
       // Optional: throw or handle more specific errors
     }
   }
 
-
-  console.log(streak)
   const today = new Date().toISOString().split("T")[0] // "2025-06-04"
   const isToday = streak.last_entry_date === today
 
@@ -122,7 +183,7 @@ export async function SectionCards({ data }: { data: any }) {
               <div className="flex items-center">
                 <BoltIcon className={`size-8 ${calculateDailyStreak(data) > 0 ? "text-yellow-400" : "text-gray-400"}`} />
                 <span className="pl-0.5">
-                  {calculateDailyStreak(data)} {/* Display the count */}
+                  <XPCard xp={userXp.xp} duration={5} /> {/* Display the count */}
                 </span>
               </div>
             </CardTitle>
@@ -180,24 +241,54 @@ export async function SectionCards({ data }: { data: any }) {
         </Button>
       </Header>
       <div className="grid grid-cols-1 gap-4">
-
-        <Card className="@container/card bg-white gap-0">
-          <CardHeader>
-            <CardTitle className="text-sm font-semibold tabular-nums @[250px]/card:text-3xl">
+        {/* ------------------------------------------------------------------------------ */}
+        {/* --------------------------- User Daily Quests Card --------------------------- */}
+        {/* ------------------------------------------------------------------------------ */}
+        {userDailyQuests
+          ?
+          <Card className="@container/card bg-white gap-0 p-0">
+            <CardHeader className="p-6 mb-0 gap-0">
+              <CardTitle className="text-sm font-semibold tabular-nums @[250px]/card:text-3xl p-0">
+                <div className="text-sm grid gap-4">
+                  <div className="flex items-center gap-2 pb">
+                    <CheckCircleIcon className="text-green-500" /> <span>Daily Quest Complete</span>
+                  </div>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <Separator />
+            <CardContent>
+              <div className="text-sm grid gap-4 py-8">
+                <TreasureChestAnimation5588 />
+              </div>
+            </CardContent>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm w-full pb-8">
+              <div className="line-clamp-1 flex justify-center w-full text-center gap-2 font-medium text-gray-500">
+                <span>{questCompletionMessages[Math.floor(Math.random() * questCompletionMessages.length)]}</span>
+              </div>
+            </CardFooter>
+          </Card>
+          :
+          <Card className="@container/card bg-white gap-0">
+            <CardHeader className="mb-0 gap-0">
+              <CardTitle className="text-sm font-semibold tabular-nums @[250px]/card:text-3xl">
+                <div className="text-sm grid gap-4">
+                </div>
+              </CardTitle>
+            </CardHeader>
+            {userDailyQuests ? <Separator /> : null}
+            <CardContent>
               <div className="text-sm grid gap-4">
                 <span>{quest.prompt}</span>
                 <Progress value={3} />
                 <Button className="w-full">Claim {quest.xp_reward} Bonus XP Points</Button>
               </div>
-            </CardTitle>
-          </CardHeader>
-          <CardFooter className="flex-col items-start gap-1.5 text-sm w-full">
-            <div className="line-clamp-1 flex justify-center w-full text-center gap-2 font-medium text-gray-300">
+            </CardContent>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm w-full">
+            </CardFooter>
+          </Card>
+        }
 
-
-            </div>
-          </CardFooter>
-        </Card>
 
       </div>
       <Header text={"Monthly Badges"}>
@@ -206,26 +297,46 @@ export async function SectionCards({ data }: { data: any }) {
         </Button>
       </Header>
       <div className="grid grid-cols-3 gap-4">
-        {['June', 'July', 'August'].map((month: string, index: any) => {
-          return (
-            <Card key={month} className="@container/card bg-white gap-0">
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                  <div className="flex justify-center">
-                    <LockClosedIcon className={`size-8 text-gray-300`} />
+        {userMonthlyBadges?.map((badge: any) => {
+          const now = new Date();
+          const badgeDate = new Date(badge.month);
+
+          // How many months ahead (or behind) the badge is from now
+          const yearDifference = now.getFullYear() == badgeDate.getFullYear()
+          const monthDifference = badgeDate.getMonth() - now.getMonth();
+
+          // Show current month and next two
+          if (monthDifference >= -1 && monthDifference < 2 && yearDifference) {
+            return (
+              <Card key={badge.id} className="@container/card bg-white gap-0">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                    <div className="flex justify-center">
+                      {badge.earned_at ? (
+                        <div
+                          className="size-12 bg-center bg-no-repeat bg-contain filter"
+                          style={{
+                            backgroundImage: `url(/monthlybadges/svgs/badge.svg)`,
+                          }}
+                        />
+                      ) : (
+                        <LockClosedIcon className="size-12 text-gray-300" />
+                      )}
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                  <div className="line-clamp-1 flex justify-center w-full text-center gap-2 font-medium text-gray-300">
+                    <span>{badge.name}</span>
                   </div>
-                </CardTitle>
-              </CardHeader>
-              <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                <div className="line-clamp-1 flex justify-center w-full text-center gap-2 font-medium text-gray-300">
-                  <span>{month}</span>
-                </div>
-              </CardFooter>
-            </Card>
-          )
-        }
-        )
-        }
+                </CardFooter>
+              </Card>
+            );
+          }
+
+          return null;
+        })}
+
 
       </div>
 
@@ -235,7 +346,7 @@ export async function SectionCards({ data }: { data: any }) {
         </Button>
       </Header>
       <div className="grid grid-cols-3 gap-4">
-        {achievements?.map((achievement, index: any) => {
+        {userAchievements?.map((achievement, index: any) => {
           // const Icon = icons[achievement.icon as keyof typeof icons];
           return (
             <AlertDialog key={achievement.id}>
@@ -244,7 +355,7 @@ export async function SectionCards({ data }: { data: any }) {
                   <CardHeader>
                     <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                       <div
-                        className="size-12 bg-center bg-no-repeat bg-contain filter grayscale"
+                        className={`size-12 bg-center bg-no-repeat bg-contain filter ${achievement.earned_at ? "" : "grayscale"}`}
                         style={{
                           backgroundImage: `url(/achievements/svgs/colored/${achievement.icon}.svg)`,
                         }}
@@ -262,7 +373,7 @@ export async function SectionCards({ data }: { data: any }) {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    <Image width={500} height={500} src={'/achievements/svgs/colored/' + achievement.icon + '.svg'} alt={''} className={`w-full grayscale`} />
+                    <Image width={500} height={500} src={'/achievements/svgs/colored/' + achievement.icon + '.svg'} alt={''} className={`w-full ${achievement.earned_at ? "" : "grayscale"}`} />
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     {/* <Header link={false}>{achievement.name}</Header> */}

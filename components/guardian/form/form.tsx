@@ -290,6 +290,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                 })
             );
             filteredValues.child_id = selectedChild.id;
+
             const { data: recordData, error: recordError } = await supabase
                 .from(module.supabase.table)
                 .upsert([filteredValues])
