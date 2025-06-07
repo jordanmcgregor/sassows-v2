@@ -16,7 +16,7 @@ import {
 import { Fireworks } from 'fireworks-js'
 import confetti from 'canvas-confetti'
 import { FireIcon } from "@heroicons/react/20/solid"
-import { TreasureChestAnimationFull } from "@/app/test/motion/page"
+import { TreasureChestAnimationFull } from "@/components/guardian/home/gamification/quest-animation"
 import BadgeAnimation from "@/components/guardian/home/gamification/badge-animation"
 import AchievementAnimation from "../home/gamification/achievement-animation"
 

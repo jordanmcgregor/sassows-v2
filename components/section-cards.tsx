@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import StreakCard from "./guardian/home/gamification/streak-card";
 import { Span } from "next/dist/trace";
-import { TreasureChestAnimationHalf } from "@/app/test/motion/page";
+import { TreasureChestAnimationHalf } from "@/components/guardian/home/gamification/quest-animation"
 import { Separator } from "./ui/separator";
 import XPCard from "./guardian/home/gamification/xp-animation";
 
