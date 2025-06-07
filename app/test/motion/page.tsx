@@ -3,7 +3,7 @@ import React from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import BadgeAnimation from '@/components/guardian/home/gamification/badge-animation'
 
-export function TreasureChestAnimation5588() {
+export function TreasureChestAnimationHalf() {
     return (
         <div className="w-full flex justify-center overflow-hidden">
             <div className="scale-[1.8] origin-center">
@@ -39,4 +39,4 @@ export function TreasureChestAnimationFull() {
     );
 };
 
-export default BadgeAnimation
+export default TreasureChestAnimationFull

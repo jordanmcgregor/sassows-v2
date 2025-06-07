@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import StreakCard from "./guardian/home/gamification/streak-card";
 import { Span } from "next/dist/trace";
-import { TreasureChestAnimation5588 } from "@/app/test/motion/page";
+import { TreasureChestAnimationHalf } from "@/app/test/motion/page";
 import { Separator } from "./ui/separator";
 import XPCard from "./guardian/home/gamification/xp-animation";
 
@@ -259,7 +259,7 @@ export async function SectionCards({ data }: { data: any }) {
             <Separator />
             <CardContent>
               <div className="text-sm grid gap-4 py-8">
-                <TreasureChestAnimation5588 />
+                <TreasureChestAnimationHalf />
               </div>
             </CardContent>
             <CardFooter className="flex-col items-start gap-1.5 text-sm w-full pb-8">
