@@ -80,7 +80,6 @@ const useFcmToken = () => {
     // Step 7: Set the fetched token and mark as fetched.
     setNotificationPermissionStatus(Notification.permission);
     setToken(token);
-
     // ---------------------------------------------------------------------
     // --------------------- Add The Token To Supabase ---------------------
     // ---------------------------------------------------------------------
@@ -107,120 +106,63 @@ const useFcmToken = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const setupListener = async () => {
-  //     if (!token) return; // Exit if no token is available.
-
-  //     alert(`onMessage registered with token ${token}`);
-
-  //     const m = await messaging();
-  //     if (!m) return;
-
-  //     // Step 9: Register a listener for incoming FCM messages.
-  //     const unsubscribe = onMessage(m, (payload) => {
-  //       if (Notification.permission !== "granted") return;
-
-  //       console.log("Foreground push notification received:", payload);
-  //       const link = payload.fcmOptions?.link || payload.data?.link;
-
-  //       if (link) {
-  //         toast.info(
-  //           `${payload.notification?.title}: ${payload.notification?.body}`,
-  //           {
-  //             action: {
-  //               label: "Visit",
-  //               onClick: () => {
-  //                 const link = payload.fcmOptions?.link || payload.data?.link;
-  //                 if (link) {
-  //                   router.push(link);
-  //                 }
-  //               },
-  //             },
-  //           }
-  //         );
-  //       } else {
-  //         toast.info(
-  //           `${payload.notification?.title}: ${payload.notification?.body}`
-  //         );
-  //       }
-
-  //       // --------------------------------------------
-  //       // Disable this if you only want toast notifications.
-  //       const n = new Notification(
-  //         payload.notification?.title || "New message",
-  //         {
-  //           body: payload.notification?.body || "This is a new message",
-  //           data: link ? { url: link } : undefined,
-  //         }
-  //       );
-
-  //       // Step 10: Handle notification click event to navigate to a link if present.
-  //       n.onclick = (event) => {
-  //         event.preventDefault();
-  //         const link = (event.target as any)?.data?.url;
-  //         if (link) {
-  //           router.push(link);
-  //         } else {
-  //           console.log("No link found in the notification payload");
-  //         }
-  //       };
-  //       // --------------------------------------------
-  //     });
-
-  //     return unsubscribe;
-  //   };
-
-  //   let unsubscribe: Unsubscribe | null = null;
-
-  //   setupListener().then((unsub) => {
-  //     if (unsub) {
-  //       unsubscribe = unsub;
-  //     }
-  //   });
-
-  //   // Step 11: Cleanup the listener when the component unmounts.
-  //   return () => unsubscribe?.();
-  // }, [token, router, toast]);
-
   useEffect(() => {
     const setupListener = async () => {
-      if (!token) return;
+      if (!token) return; // Exit if no token is available.
 
-      console.log(token)
-
+      console.log(`onMessage registered with token ${token}`);
       const m = await messaging();
       if (!m) return;
 
-      // This only handles foreground messages for in-app actions
-      // Firebase will still show the notification automatically
+      // Step 9: Register a listener for incoming FCM messages.
       const unsubscribe = onMessage(m, (payload) => {
+        if (Notification.permission !== "granted") return;
+
         console.log("Foreground push notification received:", payload);
+        const link = payload.fcmOptions?.link || payload.data?.link;
 
-        // Firebase automatically shows the notification
-        // You can just handle in-app logic here like:
-
-        const link = payload.data?.link || payload.fcmOptions?.link;
-        const title = payload.notification?.title || "New Message";
-        const body = payload.notification?.body || "You have a new message";
-
-        // Optional: Show toast for in-app feedback (in addition to the notification)
         if (link) {
-          toast.info(`${title}: ${body}`, {
-            action: {
-              label: "Visit",
-              onClick: () => {
-                router.push(link);
+          toast.info(
+            `${payload.notification?.title}: ${payload.notification?.body}`,
+            {
+              action: {
+                label: "Visit",
+                onClick: () => {
+                  const link = payload.fcmOptions?.link || payload.data?.link;
+                  if (link) {
+                    router.push(link);
+                  }
+                },
               },
-            },
-          });
+            }
+          );
         } else {
-          toast.info(`${title}: ${body}`);
+          toast.info(
+            `${payload.notification?.title}: ${payload.notification?.body}`
+          );
         }
 
-        // Optional: You could also play a sound, update badges, etc.
-        // playNotificationSound();
-        // updateUnreadCount();
-        // refreshData();
+        // --------------------------------------------
+        // Disable this if you only want toast notifications.
+        const n = new Notification(
+          payload.notification?.title || "New message",
+          {
+            body: payload.notification?.body || "This is a new message",
+            data: link ? { url: link } : undefined,
+          }
+        );
+
+        // Step 10: Handle notification click event to navigate to a link if present.
+        n.onclick = (event) => {
+          event.preventDefault();
+          const link = (event.target as any)?.data?.url;
+          if (link) {
+            router.push(link);
+          } else {
+            console.log("No link found in the notification payload");
+          }
+        };
+        // --------------------------------------------
       });
 
       return unsubscribe;
@@ -234,6 +176,7 @@ const useFcmToken = () => {
       }
     });
 
+    // Step 11: Cleanup the listener when the component unmounts.
     return () => unsubscribe?.();
   }, [token, router, toast]);
 
