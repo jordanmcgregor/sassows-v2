@@ -14,7 +14,10 @@ export async function POST(request: NextRequest) {
     try {
         const { token } = await request.json();
         console.log(token)
-        const tokens = [token,"d3Gziidv0hutCkNJJlBqJB:APA91bGW_czD8yAV3WJPizWevFbaumhNq7yb-_kTkDwdzzcIlb7lLjxKYR0Fkwty8fdzFOfzw8RljnyYhtX8N_s9yiGyhZuoM4IpcsX-3YD4STM5G0EDPSY"]
+        // const tokens = [token,"d3Gziidv0hutCkNJJlBqJB:APA91bGW_czD8yAV3WJPizWevFbaumhNq7yb-_kTkDwdzzcIlb7lLjxKYR0Fkwty8fdzFOfzw8RljnyYhtX8N_s9yiGyhZuoM4IpcsX-3YD4STM5G0EDPSY"]
+        const tokens = [token,"cCOqIQDEqfWqiWlRmkkuIG:APA91bHXREz2k3eqwGEGlwsXl76UfeKf22oYTq7ldKJbrgVIc1yeDOFj9ANCFFiUdEc2ZcxhSMHWmzoo4y60Bn0Ninx-fCAwOd44RtXqIRRzoij28bABBsw"]
+
+
         // Validate required fields
         // if (!tokens || !Array.isArray(tokens) || tokens.length === 0) {
 
