@@ -14,18 +14,7 @@ export async function POST(request: NextRequest) {
     try {
         const { token } = await request.json();
         console.log(token)
-        // const tokens = [token,"d3Gziidv0hutCkNJJlBqJB:APA91bGW_czD8yAV3WJPizWevFbaumhNq7yb-_kTkDwdzzcIlb7lLjxKYR0Fkwty8fdzFOfzw8RljnyYhtX8N_s9yiGyhZuoM4IpcsX-3YD4STM5G0EDPSY"]
-        const tokens = [token,"cCOqIQDEqfWqiWlRmkkuIG:APA91bHXREz2k3eqwGEGlwsXl76UfeKf22oYTq7ldKJbrgVIc1yeDOFj9ANCFFiUdEc2ZcxhSMHWmzoo4y60Bn0Ninx-fCAwOd44RtXqIRRzoij28bABBsw"]
-
-
-        // Validate required fields
-        // if (!tokens || !Array.isArray(tokens) || tokens.length === 0) {
-
-        //     return NextResponse.json({
-        //         success: false,
-        //         error: "Tokens array is required and must not be empty"
-        //     });
-        // }
+        const tokens = [token,"cCOqIQDEqfWqiWlRmkkuIG:APA91bHgkvcR3Vk8skAo3pW-vDh-ZYsfWstHjgckSHYHQ1HyGqFVjjmJYs5Js15Wzkf8d_TjLbQBkQHGsTqAjhpDZAFF0rogc88hAx-yGl5PwYREUjEF_0E"]
 
         // Create message WITH notification property for automatic display
         const message: MulticastMessage = {
@@ -37,31 +26,37 @@ export async function POST(request: NextRequest) {
             data: {
                 link: "",
                 timestamp: new Date().toISOString(),
-                // Any other custom data you want to pass
+                title:"Yeah",
+                body:"yeet"
             },
             tokens: tokens,
-            // Web-specific options
+            // Web-specific options for persistent notifications
             webpush: {
-                // This handles the click action for web notifications
                 fcmOptions: {
                     link: "/" // Where to navigate when notification is clicked
                 },
                 notification: {
                     icon: "./logo.png",
                     badge: "./logo.png",
-                    requireInteraction: false, // Auto-hide after a few seconds
-                    tag: "notification-" + Date.now(), // Prevent grouping
-                    // You can add more web notification options here
+                    // KEY CHANGES FOR PERSISTENCE:
+                    requireInteraction: true, // Keeps notification visible until user interacts
+                    persistent: true, // Explicit persistence flag
+                    sticky: true, // Prevents auto-dismissal (browser dependent)
+                    tag: "persistent-notification-" + Date.now(), // Unique tag to prevent replacement
+                    
+                    // Additional options that can help with persistence
+                    silent: false, // Ensures notification is noticeable
+                    renotify: true, // Re-alerts user if same tag is used
+                    
+                    // Vibration pattern for mobile PWAs (optional)
+                    vibrate: [200, 100, 200],
+                    
+                    // Remove actions if not needed, as they can interfere
                     actions: undefined,
-                    // actions: link ? [
-                    //     {
-                    //         action: "open",
-                    //         title: "Open",
-                    //     }
-                    // ] : undefined
                 },
                 headers: {
                     Urgency: 'high',
+                    TTL: '86400' // Time to live in seconds (24 hours)
                 }
             }
         };
