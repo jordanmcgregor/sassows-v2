@@ -289,7 +289,35 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                     return fieldDef?.input.type !== "files";
                 })
             );
+
+            // ✅ Convert all local `date` fields to UTC ISO strings
+            for (const [key, value] of Object.entries(filteredValues)) {
+                const fieldDef = fields.find((f) => f.input.name === key);
+                if (fieldDef?.input.type === 'date' && typeof value === 'string') {
+                    filteredValues[key] = localDateToUtcIso(value);
+                }
+            }
+
             filteredValues.child_id = selectedChild.id;
+            // alert(filteredValues.created_at)
+            alert(console.log(user))
+            if (!user.timezone) {
+                // Get user's timezone string on the client side
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                const { data: { user } } = await supabase.auth.getUser()
+                if (user) {
+                    const { data: recordData, error: recordError } = await supabase
+                        .from('users')
+                        .update({ timezone: timezone })  // You must include user id to update existing user
+                        .eq('user_id', user.id)
+                        .select();
+                    if (recordError) {
+                        // handle error
+                        console.error('Error updating timezone:', recordError);
+                    }
+                }
+            }
 
             const { data: recordData, error: recordError } = await supabase
                 .from(module.supabase.table)
@@ -487,4 +515,10 @@ export function AlertDemo({ module }: { module: ModuleType }) {
             </AlertDescription>
         </Alert>
     )
+}
+
+function localDateToUtcIso(dateString: string): string {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const localDate = new Date(year, month - 1, day); // Local midnight
+    return localDate.toISOString(); // Converts to UTC
 }

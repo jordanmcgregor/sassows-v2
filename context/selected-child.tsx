@@ -21,6 +21,7 @@ const ChildContext = createContext<ChildContextType | undefined>(undefined);
 
 
 export type User = {
+  timezone: string,
   products: { id: string, name: string }[]
   // extend with more fields as needed
 } | null;

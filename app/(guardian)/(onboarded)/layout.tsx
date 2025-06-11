@@ -20,11 +20,13 @@ export default async function PrivatePage({ children }: { children: React.ReactN
 
     const { data: userData, error: userError } = await supabase
         .from('users')
-        .select(`products (
+        .select(`timezone,products (
                     id,
                     name
                     )`)
         .single()
+
+    console.log(userData)
 
     if (error || !data?.user) {
         redirect('/sign-in')

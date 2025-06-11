@@ -37,6 +37,7 @@ import { Span } from "next/dist/trace";
 import { TreasureChestAnimationHalf } from "@/components/guardian/home/gamification/quest-animation"
 import { Separator } from "./ui/separator";
 import XPCard from "./guardian/home/gamification/xp-animation";
+import { DateTime } from 'luxon'
 
 const questCompletionMessages = [
   "🎉 Quest complete! You're one step closer to earning that shiny monthly badge!",
@@ -95,10 +96,10 @@ export async function SectionCards({ data }: { data: any }) {
     .select()
     .order('xp_reward', { ascending: true })
 
-  const now = new Date()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  // Format today's date as YYYY-MM-DD
-  const todayString = now.toISOString().split('T')[0] // e.g., "2025-06-03"
+  const now = DateTime.now().setZone('America/Denver');
+  const todayString = DateTime.now().setZone('America/Denver').toISODate();
   const { data: quest, error: questError } = await supabase
     .schema('gamification')
     .from('daily_quests')
@@ -154,16 +155,12 @@ export async function SectionCards({ data }: { data: any }) {
     }
   }
 
-  const today = new Date().toISOString().split("T")[0] // "2025-06-04"
-  const isToday = streak.last_entry_date === today
+  const lastEntryDate = DateTime.fromISO(streak.last_entry_date, { zone: 'America/Denver' }).toISODate();
+  const isToday = lastEntryDate === todayString;
+  const endOfDay = now.endOf('day');
 
-
-  // Calculate how many hours are left in the day
-  const endOfDay = new Date(now)
-  endOfDay.setHours(23, 59, 59, 999)
-
-  const msLeft = endOfDay.getTime() - now.getTime()
-  const hoursLeft = Math.floor(msLeft / (1000 * 60 * 60)) + 1
+  const diff = endOfDay.diff(now, ['hours', 'minutes', 'seconds']);
+  const hoursLeft = Math.floor(diff.hours);
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">

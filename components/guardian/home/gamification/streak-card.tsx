@@ -9,11 +9,20 @@ import {
 } from "@/components/ui/card"
 import { BoltIcon, FireIcon, KeyIcon, LockClosedIcon, TrophyIcon } from "@heroicons/react/20/solid"
 import { createClient } from "@/utils/supabase/client"
+import { DateTime } from 'luxon';
+import { useChild, useUser } from "@/context/selected-child"
 
 export default function StreakCard({ streak }: { streak: any }) {
-    const today = new Date().toLocaleDateString('en-CA')
-    const entryDateLocal = parseUTCDateToLocalYYYYMMDD(streak.last_entry_date)
-    const isToday = entryDateLocal === today
+    const user = useUser()
+
+    const now = DateTime.now().setZone(user.timezone);
+    const today = now.toISODate(); // e.g., "2025-06-10"
+
+    const entryDateLocal = DateTime.fromISO(streak.last_entry_date, { zone: 'utc' })
+        .setZone(user.timezone)
+        .toISODate();
+
+    const isToday = entryDateLocal === today;
 
 
     return (
