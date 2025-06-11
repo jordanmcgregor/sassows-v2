@@ -9,13 +9,13 @@ importScripts(
 
 // Replace these with your own Firebase config object.
 const firebaseConfig = {
-  apiKey: "AIzaSyCOwd_xZvGDFNEielVfFyJXW8iOIGyVZ_E",
-  authDomain: "sassows-9bfed.firebaseapp.com",
-  projectId: "sassows-9bfed",
-  storageBucket: "sassows-9bfed.firebasestorage.app",
-  messagingSenderId: "749062938352",
-  appId: "1:749062938352:web:bf34d415cf029c0056635", // <-- Check this appId carefully, might be slightly different than client
-  measurementId: "G-ZDYR2WWKY3" // Optional for SW unless doing SW-specific analytics
+  apiKey: process.env.FCM_CONFIG_API_KEY,
+  authDomain: process.env.FCM_CONFIG_AUTH_DOMAIN,
+  projectId: process.env.FCM_CONFIG_PROJECT_ID,
+  storageBucket: process.env.FCM_CONFIG_STORAGE_BUCKET,
+  messagingSenderId: process.env.FCM_CONFIG_MESSAGING_SENDER_ID,
+  appId: process.env.FCM_CONFIG_APP_ID,
+  measurementId: process.env.FCM_CONFIG_MEASUREMENT_ID
 };
 
 firebase.initializeApp(firebaseConfig);
