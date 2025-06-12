@@ -8,6 +8,7 @@ import useFcmToken from '@/hooks/usePushNotificationToken'
 export default function Notifications() {
     const { notificationPermissionStatus, token, loadToken } = useFcmToken()
     return (
+        // <div className="bg-[url('/notificationpositioning.png')] bg-cover bg-center">
         <div className="w-full h-dvh min-h-2.5 flex flex-col justify-between items-between relative p-12">
             <div className="flex-1"> {/* Adjust positioning as needed */}
                 <TypeAnimation
@@ -24,7 +25,7 @@ export default function Notifications() {
             <div className="flex-1 flex items-center">
                 <button onClick={loadToken}>
                     <div className="relative">
-                        <Image width={500} height={500} alt="" src="/notificationrequestgrayscale.png"></Image>
+                        <Image width={500} height={500} className="opacity-20 p-3" alt="" src="/notificationrequestgrayscale.png"></Image>
                         <IconArrowUp className="absolute left-[75%] -translate-x-1/2 bounce-down text-blue-400 size-8" />
                     </div>
                 </button>
@@ -36,5 +37,6 @@ export default function Notifications() {
                 </Button>
             </div>
         </div >
+        // </div>
     )
 }
