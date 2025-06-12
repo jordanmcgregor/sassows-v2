@@ -20,7 +20,9 @@ export default async function PrivatePage({ children }: { children: React.ReactN
 
     const { data: userData, error: userError } = await supabase
         .from('users')
-        .select(`timezone,products (
+        .select(`timezone,
+            onboarded,
+            products (
                     id,
                     name
                     )`)
@@ -42,6 +44,10 @@ export default async function PrivatePage({ children }: { children: React.ReactN
     // Safety: redirect or render a fallback if no children
     if (!childrenData || childrenData.length === 0) {
         redirect('/onboarding') // or show modal/form here if client-side
+    }
+
+    if (!userData?.onboarded) {
+        redirect('/onboarding/notifications')
     }
 
     return (
