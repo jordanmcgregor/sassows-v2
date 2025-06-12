@@ -25,7 +25,7 @@ export default function Notifications() {
             <div className="flex-1 flex items-center">
                 <button onClick={loadToken}>
                     <div className="relative">
-                        <Image width={500} height={500} className="p-3 -m-3" alt="" src="/notificationrequestgrayscale.png"></Image>
+                        <Image width={500} height={500} className="p-3 -mt-3" alt="" src="/notificationrequestgrayscale.png"></Image>
                         <IconArrowUp className="absolute left-[75%] -translate-x-1/2 bounce-down text-blue-400 size-8" />
                     </div>
                 </button>
