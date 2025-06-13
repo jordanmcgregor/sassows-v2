@@ -13,23 +13,45 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
     const { notificationPermissionStatus, token, loadToken } = useFcmToken()
     const router = useRouter();
 
-    useEffect(() => {
-        const markOnboardingComplete = async () => {
-            if (notificationPermissionStatus) {
-                const supabase = createClient();
+    const handleApproveNotifications = async () => {
+        const token = await loadToken(); // This waits for the user's permission action
 
-                const { data: auth, error: authError } = await supabase.auth.getUser()
-                if (auth && auth.user) {
-                    const { error } = await supabase
-                        .from('users') // Replace with your table name
-                        .update({ onboarded: true }) // Replace 'your_user_id'
-                        .eq('user_id', auth.user.id)
-                }
-                router.push('/home')
+        // Check if the user granted permission
+        if (Notification.permission === "granted" && token) {
+            const supabase = createClient();
+            const { data: auth } = await supabase.auth.getUser();
+
+            if (auth?.user) {
+                await supabase
+                    .from('users')
+                    .update({ onboarded: true })
+                    .eq('user_id', auth.user.id);
             }
+
+            router.push('/home');
+        } else {
+            // Optionally show a message/toast if denied
+            console.warn("Notification permission not granted.");
         }
-        markOnboardingComplete()
-    }, [notificationPermissionStatus])
+    };
+
+    // useEffect(() => {
+    //     const markOnboardingComplete = async () => {
+    //         if (notificationPermissionStatus) {
+    //             const supabase = createClient();
+
+    //             const { data: auth, error: authError } = await supabase.auth.getUser()
+    //             if (auth && auth.user) {
+    //                 const { error } = await supabase
+    //                     .from('users') // Replace with your table name
+    //                     .update({ onboarded: true }) // Replace 'your_user_id'
+    //                     .eq('user_id', auth.user.id)
+    //             }
+    //             router.push('/home')
+    //         }
+    //     }
+    //     markOnboardingComplete()
+    // }, [notificationPermissionStatus])
     return (
         // <div className="bg-[url('/notificationpositioning.png')] bg-cover bg-center">
         <div className="w-full h-dvh min-h-2.5 flex flex-col justify-between items-between relative p-12">
@@ -45,8 +67,8 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
                     repeat={0}
                 />
             </div>
-            {os == 'iOS' ? <Apple loadToken={loadToken} /> : null}
-            {os == 'Android' ? <Android loadToken={loadToken} /> : null}
+            {os == 'iOS' ? <Apple loadToken={handleApproveNotifications} /> : null}
+            {os == 'Android' ? <Android loadToken={handleApproveNotifications} /> : null}
             {/* <Android loadToken={loadToken} /> */}
             <div className="flex-1 flex items-end">
                 <Button onClick={loadToken} variant={"default"} className="w-full h-12">
