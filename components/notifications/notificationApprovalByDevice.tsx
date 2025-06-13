@@ -100,7 +100,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
         if (user) {
             const { data: tokenData, error: tokenError } = await supabase
                 .from('users')
-                .update({ fcm_token: token })  // You must include user id to update existing user
+                .update({ fcm_token: token, onboarded: true })  // You must include user id to update existing user
                 .eq('user_id', user.id)
                 .select();
             if (tokenError) {
