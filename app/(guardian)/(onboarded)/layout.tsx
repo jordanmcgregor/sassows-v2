@@ -21,6 +21,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
     const { data: userData, error: userError } = await supabase
         .from('users')
         .select(`timezone,
+            user_id,
             onboarded,
             products (
                     id,

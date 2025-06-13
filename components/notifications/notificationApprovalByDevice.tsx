@@ -4,10 +4,32 @@ import { IconArrowUp } from '@tabler/icons-react'
 import Image from 'next/image'
 import { TypeAnimation } from 'react-type-animation'
 import useFcmToken from '@/hooks/usePushNotificationToken'
+import { useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
+import { useRouter } from "next/navigation";
 
 
 export default function NotificationApprovalByDevice({ os, browser }: { os: any, browser: any }) {
     const { notificationPermissionStatus, token, loadToken } = useFcmToken()
+    const router = useRouter();
+
+    useEffect(() => {
+        const markOnboardingComplete = async () => {
+            if (notificationPermissionStatus) {
+                const supabase = createClient();
+
+                const { data: auth, error: authError } = await supabase.auth.getUser()
+                if (auth && auth.user) {
+                    const { error } = await supabase
+                        .from('users') // Replace with your table name
+                        .update({ onboarded: true }) // Replace 'your_user_id'
+                        .eq('user_id', auth.user.id)
+                }
+                router.push('/home')
+            }
+        }
+        markOnboardingComplete()
+    }, [notificationPermissionStatus])
     return (
         // <div className="bg-[url('/notificationpositioning.png')] bg-cover bg-center">
         <div className="w-full h-dvh min-h-2.5 flex flex-col justify-between items-between relative p-12">
