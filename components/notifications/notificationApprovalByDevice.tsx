@@ -36,7 +36,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
     )
 }
 
-function Apple(loadToken: any) {
+function Apple({ loadToken }: { loadToken: () => void }) {
     return (
         <div className="flex-1 flex items-center absolute top-48/100 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[69vw]">
             <button onClick={loadToken}>
@@ -49,7 +49,7 @@ function Apple(loadToken: any) {
     )
 }
 
-function Android(loadToken: any) {
+function Android({ loadToken }: { loadToken: () => void }) {
     return (
         <div className="flex-1 flex items-center absolute top-50/100 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw]">
             <button onClick={loadToken}>
