@@ -64,6 +64,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
                 "%cPush Notifications issue - permission denied",
                 "color: green; background: #c7c7c7; padding: 8px; font-size: 20px"
             );
+            alert("denied")
             isLoading.current = false;
             return;
         }
@@ -108,6 +109,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
             }
         }
         isLoading.current = false;
+        router.push('/home')
     };
 
     // useEffect(() => {
