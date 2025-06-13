@@ -17,18 +17,21 @@ async function getNotificationPermissionAndFCMToken() {
 
     // Step 2: Check if permission is already granted.
     if (Notification.permission === "granted") {
+        alert("20")
         return await fetchToken(); // Fetch the token
     }
 
     // Step 3: If permission is not denied, request permission from the user.
     if (Notification.permission !== "denied") {
+        alert("26")
         const permission = await Notification.requestPermission();
+        alert("28")
         if (permission === "granted") {
             return await fetchToken(); // Fetch the token
         }
     }
 
-    console.log("Notification permission not granted.");
+    alert("Notification permission not granted.");
     return null;
 }
 
