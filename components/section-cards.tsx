@@ -38,6 +38,7 @@ import { TreasureChestAnimationHalf } from "@/components/guardian/home/gamificat
 import { Separator } from "./ui/separator";
 import XPCard from "./guardian/home/gamification/xp-animation";
 import { DateTime } from 'luxon'
+import DailyQuest from "@/components/guardian/modules/quest";
 
 const questCompletionMessages = [
   "🎉 Quest complete! You're one step closer to earning that shiny monthly badge!",
@@ -107,6 +108,8 @@ export async function SectionCards({ data }: { data: any }) {
     .eq('date', todayString)
     .single()
 
+  console.log(quest)
+
   const { data: userDailyQuests, error: userDailyQuestsError } = await supabase
     .schema('gamification')
     .from('user_daily_quests')
@@ -161,6 +164,8 @@ export async function SectionCards({ data }: { data: any }) {
 
   const diff = endOfDay.diff(now, ['hours', 'minutes', 'seconds']);
   const hoursLeft = Math.floor(diff.hours);
+
+  const module = determineModule({ modules, type: quest.record_type })!;
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
@@ -273,12 +278,12 @@ export async function SectionCards({ data }: { data: any }) {
                 </div>
               </CardTitle>
             </CardHeader>
-            {userDailyQuests ? <Separator /> : null}
             <CardContent>
               <div className="text-sm grid gap-4">
                 <span>{quest.prompt}</span>
                 <Progress value={3} />
-                <Button className="w-full">Claim {quest.xp_reward} Bonus XP Points</Button>
+                {/* <Button className="w-full">Claim {quest.xp_reward} Bonus XP Points</Button> */}
+                <DailyQuest module={module} quest={quest} />
               </div>
             </CardContent>
             <CardFooter className="flex-col items-start gap-1.5 text-sm w-full">
@@ -289,9 +294,9 @@ export async function SectionCards({ data }: { data: any }) {
 
       </div>
       <Header text={"Monthly Badges"}>
-        <Button variant="link" className="uppercase">
+        {/* <Button variant="link" className="uppercase">
           see all
-        </Button>
+        </Button> */}
       </Header>
       <div className="grid grid-cols-3 gap-4">
         {userMonthlyBadges?.map((badge: any) => {
@@ -339,7 +344,7 @@ export async function SectionCards({ data }: { data: any }) {
 
       <Header text={"Achievements"}>
         <Button variant="link" className="uppercase">
-          <ClockIcon />{hoursLeft} Hours
+          {/* <ClockIcon />{hoursLeft} Hours */}
         </Button>
       </Header>
       <div className="grid grid-cols-3 gap-4">
@@ -491,4 +496,14 @@ function isMoreThanOneDayOld(date: string | Date) {
   console.log(diffInDays)
 
   return diffInDays > 1
+}
+
+function determineModule({
+  modules,
+  type,
+}: {
+  modules: ModuleType[];
+  type: string;
+}): ModuleType | undefined {
+  return modules.find((module) => module.supabase.table === type);
 }
