@@ -56,6 +56,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
         if (isLoading.current) return;
         isLoading.current = true;
         const fetchedToken = await getNotificationPermissionAndFCMToken();
+        setIsSubmitting(true)
 
 
         if (Notification.permission === "denied") {
@@ -102,6 +103,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
         } else {
             // Optionally show a message/toast if denied
             alert("notificationApprovalByDevice 37")
+            setIsSubmitting(true)
             console.warn("Notification permission not granted.");
         }
     };
@@ -126,7 +128,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
     return (
         // <div className="bg-[url('/notificationpositioning.png')] bg-cover bg-center">
         <>
-            <div className={isLoading.current ? '' : 'hidden'}>
+            <div className={isSubmitting ? '' : 'hidden'}>
                 <Overlay />
             </div>
             <div className="w-full h-dvh min-h-2.5 flex flex-col justify-between items-between relative p-12">
