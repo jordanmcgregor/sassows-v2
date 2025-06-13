@@ -51,7 +51,7 @@ function Apple(loadToken: any) {
 
 function Android(loadToken: any) {
     return (
-        <div className="flex-1 flex items-center absolute top-48/100 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw]">
+        <div className="flex-1 flex items-center absolute top-50/100 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw]">
             <button onClick={loadToken}>
                 <div className="relative">
                     <Image width={500} height={500} className="" alt="" src="/notificationrequestandroid.png"></Image>
