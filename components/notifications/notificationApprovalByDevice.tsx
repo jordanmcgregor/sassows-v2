@@ -23,9 +23,9 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
                     repeat={0}
                 />
             </div>
-            {/* {os == 'iOS' ? <Apple loadToken={loadToken} /> : null}
-            {os == 'Android' ? <Android loadToken={loadToken} /> : null} */}
-            <Android loadToken={loadToken} />
+            {os == 'iOS' ? <Apple loadToken={loadToken} /> : null}
+            {os == 'Android' ? <Android loadToken={loadToken} /> : null}
+            {/* <Android loadToken={loadToken} /> */}
             <div className="flex-1 flex items-end">
                 <Button onClick={loadToken} variant={"default"} className="w-full h-12">
                     Help me remember the magic
