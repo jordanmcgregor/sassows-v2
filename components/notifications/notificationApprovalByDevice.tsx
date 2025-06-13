@@ -23,21 +23,16 @@ async function getNotificationPermissionAndFCMToken() {
 
     // Step 2: Check if permission is already granted.
     if (Notification.permission === "granted") {
-        alert("20")
         return await fetchToken(); // Fetch the token
     }
 
     // Step 3: If permission is not denied, request permission from the user.
     if (Notification.permission !== "denied") {
-        alert("26")
         const permission = await Notification.requestPermission();
-        alert("28")
         if (permission === "granted") {
             return await fetchToken(); // Fetch the token
         }
     }
-
-    alert("Notification permission not granted.");
     return null;
 }
 
@@ -66,18 +61,18 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
         } else if (fetchedToken) {
             setNotificationPermissionStatus("granted");
             setToken(fetchedToken);
-            // Store the token in Supabase
-            const { data, error } = await supabase.auth.getUser()
-            if (data?.user) {
-                const { error } = await supabase
-                    .from('users') // Replace with your table name
-                    .update({ fcm_token: fetchedToken }) // Replace 'your_user_id'
-                    .eq('user_id', data.user.id)
-                return fetchedToken
-            }
-            if (error) {
-                console.error('Error storing FCM token:', error.message);
-            }
+            // // Store the token in Supabase
+            // const { data, error } = await supabase.auth.getUser()
+            // if (data?.user) {
+            //     const { error } = await supabase
+            //         .from('users') // Replace with your table name
+            //         .update({ fcm_token: fetchedToken }) // Replace 'your_user_id'
+            //         .eq('user_id', data.user.id)
+            //     return fetchedToken
+            // }
+            // if (error) {
+            //     console.error('Error storing FCM token:', error.message);
+            // }
         } else {
             setNotificationPermissionStatus(Notification.permission as NotificationPermission);
             setToken(null);
@@ -87,26 +82,32 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
     const handleApproveNotifications = async () => {
         const token = await loadToken(); // This waits for the user's permission action
         // Check if the user granted permission
-        if (Notification.permission === "granted" && token) {
-            const supabase = createClient();
-            const { data: auth } = await supabase.auth.getUser();
-
-            if (auth?.user) {
-                await supabase
-                    .from('users')
-                    .update({ onboarded: true })
-                    .eq('user_id', auth.user.id);
-            }
-            alert("notificationApprovalByDevice 32")
-            isLoading.current = false;
-            router.push('/home');
-            alert("notificationApprovalByDevice 34")
-        } else {
-            // Optionally show a message/toast if denied
-            alert("notificationApprovalByDevice 37")
-            setIsSubmitting(true)
-            console.warn("Notification permission not granted.");
+        const supabase = createClient();
+        const { data: auth } = await supabase.auth.getUser();
+        if (auth?.user) {
+            await supabase
+                .from('users')
+                .update({ onboarded: true, fcm_token: token })
+                .eq('user_id', auth.user.id);
         }
+        router.push('/home');
+        // if (Notification.permission === "granted" && token) {
+        //     const supabase = createClient();
+        //     const { data: auth } = await supabase.auth.getUser();
+
+        //     if (auth?.user) {
+        //         await supabase
+        //             .from('users')
+        //             .update({ onboarded: true })
+        //             .eq('user_id', auth.user.id);
+        //     }
+        //     isLoading.current = false;
+        //     router.push('/home');
+        // } else {
+        //     // Optionally show a message/toast if denied
+        //     router.push('/home');
+        //     console.warn("Notification permission not granted.");
+        // }
     };
 
     // useEffect(() => {
