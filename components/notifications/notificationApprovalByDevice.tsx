@@ -54,9 +54,9 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
 
     const loadToken = async () => {
         if (isLoading.current) return;
-
-        const fetchedToken = await getNotificationPermissionAndFCMToken();
         isLoading.current = true;
+        const fetchedToken = await getNotificationPermissionAndFCMToken();
+
 
         if (Notification.permission === "denied") {
             setNotificationPermissionStatus("denied");
