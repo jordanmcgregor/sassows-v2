@@ -4,20 +4,86 @@ import { IconArrowUp } from '@tabler/icons-react'
 import Image from 'next/image'
 import { TypeAnimation } from 'react-type-animation'
 import useFcmToken from '@/hooks/usePushNotificationToken'
-import { useEffect } from 'react'
-import { createClient } from '@/utils/supabase/client'
+
+import Overlay from '@/components/submitting/overlay'
+import { useEffect, useRef, useState } from "react";
+import { getToken, onMessage, Unsubscribe } from "firebase/messaging";
+import { fetchToken, messaging } from "@/firebase";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { createClient } from '@/utils/supabase/client';
+import { useUser } from "@/context/selected-child";
+
+async function getNotificationPermissionAndFCMToken() {
+    // Step 1: Check if Notifications are supported in the browser.
+    if (!("Notification" in window)) {
+        console.info("This browser does not support desktop notification");
+        return null;
+    }
+
+    // Step 2: Check if permission is already granted.
+    if (Notification.permission === "granted") {
+        alert("20")
+        return await fetchToken(); // Fetch the token
+    }
+
+    // Step 3: If permission is not denied, request permission from the user.
+    if (Notification.permission !== "denied") {
+        alert("26")
+        const permission = await Notification.requestPermission();
+        alert("28")
+        if (permission === "granted") {
+            return await fetchToken(); // Fetch the token
+        }
+    }
+
+    alert("Notification permission not granted.");
+    return null;
+}
 
 
 export default function NotificationApprovalByDevice({ os, browser }: { os: any, browser: any }) {
-    const { notificationPermissionStatus, token, loadToken } = useFcmToken()
+    // const { notificationPermissionStatus, token, loadToken } = useFcmToken()
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<NotificationPermission | null>(null);
+    const [token, setToken] = useState<string | null>(null);
+    const retryLoadToken = useRef(0);
+    const isLoading = useRef(false);
+    const supabase = createClient();
     const router = useRouter();
+
+    const loadToken = async () => {
+        if (isLoading.current) return;
+
+        const fetchedToken = await getNotificationPermissionAndFCMToken();
+        isLoading.current = true;
+
+        if (Notification.permission === "denied") {
+            setNotificationPermissionStatus("denied");
+            setToken(null);
+        } else if (fetchedToken) {
+            setNotificationPermissionStatus("granted");
+            setToken(fetchedToken);
+            // Store the token in Supabase
+            const { data, error } = await supabase.auth.getUser()
+            if (data?.user) {
+                const { error } = await supabase
+                    .from('users') // Replace with your table name
+                    .update({ fcm_token: fetchedToken }) // Replace 'your_user_id'
+                    .eq('user_id', data.user.id)
+                return fetchedToken
+            }
+            if (error) {
+                console.error('Error storing FCM token:', error.message);
+            }
+        } else {
+            setNotificationPermissionStatus(Notification.permission as NotificationPermission);
+            setToken(null);
+        }
+    };
 
     const handleApproveNotifications = async () => {
         const token = await loadToken(); // This waits for the user's permission action
-        alert("notificationApprovalByDevice 18")
-        alert(Notification.permission)
-        alert(token)
         // Check if the user granted permission
         if (Notification.permission === "granted" && token) {
             const supabase = createClient();
@@ -30,6 +96,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
                     .eq('user_id', auth.user.id);
             }
             alert("notificationApprovalByDevice 32")
+            isLoading.current = false;
             router.push('/home');
             alert("notificationApprovalByDevice 34")
         } else {
@@ -58,29 +125,35 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
     // }, [notificationPermissionStatus])
     return (
         // <div className="bg-[url('/notificationpositioning.png')] bg-cover bg-center">
-        <div className="w-full h-dvh min-h-2.5 flex flex-col justify-between items-between relative p-12">
-            <div className="flex-1"> {/* Adjust positioning as needed */}
-                <TypeAnimation
-                    sequence={[
-                        "The sweetest moments often slip by unnoticed. I’ll gently remind you to catch them before they’re gone.",
-                        // ... (rest of your sequence)
-                    ]}
-                    wrapper="span"
-                    speed={50}
-                    style={{ display: 'inline-block' }} // Added display: inline-block for proper sizing
-                    repeat={0}
-                />
+        <>
+            <div className={isLoading.current ? '' : 'hidden'}>
+                <Overlay />
             </div>
-            {os == 'iOS' ? <Apple loadToken={handleApproveNotifications} /> : null}
-            {os == 'Android' ? <Android loadToken={handleApproveNotifications} /> : null}
-            {/* <Android loadToken={loadToken} /> */}
-            <div className="flex-1 flex items-end">
-                <Button onClick={handleApproveNotifications} variant={"default"} className="w-full h-12">
-                    Help me remember the magic
-                </Button>
-            </div>
-        </div >
-        // </div>
+            <div className="w-full h-dvh min-h-2.5 flex flex-col justify-between items-between relative p-12">
+                <div className="flex-1"> {/* Adjust positioning as needed */}
+                    <TypeAnimation
+                        sequence={[
+                            "The sweetest moments often slip by unnoticed. I’ll gently remind you to catch them before they’re gone.",
+                            // ... (rest of your sequence)
+                        ]}
+                        wrapper="span"
+                        speed={50}
+                        style={{ display: 'inline-block' }} // Added display: inline-block for proper sizing
+                        repeat={0}
+                    />
+                </div>
+                {os == 'iOS' ? <Apple loadToken={handleApproveNotifications} /> : null}
+                {os == 'Android' ? <Android loadToken={handleApproveNotifications} /> : null}
+                {/* <Android loadToken={loadToken} /> */}
+                <div className="flex-1 flex items-end">
+                    <Button onClick={handleApproveNotifications} variant={"default"} className="w-full h-12">
+                        Help me remember the magic
+                    </Button>
+                </div>
+            </div >
+        </>
+        // </div >
+
     )
 }
 
