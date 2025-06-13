@@ -53,6 +53,7 @@ const useFcmToken = () => {
         "%cPush Notifications issue - permission denied",
         "color: green; background: #c7c7c7; padding: 8px; font-size: 20px"
       );
+      alert("denied")
       isLoading.current = false;
       return;
     }
@@ -88,7 +89,7 @@ const useFcmToken = () => {
     if (user) {
       const { data: tokenData, error: tokenError } = await supabase
         .from('users')
-        .update({ fcm_token: token })  // You must include user id to update existing user
+        .update({ fcm_token: token, onboarded: true })  // You must include user id to update existing user
         .eq('user_id', user.id)
         .select();
       if (tokenError) {
@@ -97,6 +98,7 @@ const useFcmToken = () => {
       }
     }
     isLoading.current = false;
+    router.push('/home')
   };
 
   useEffect(() => {
