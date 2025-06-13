@@ -64,7 +64,21 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
                 "%cPush Notifications issue - permission denied",
                 "color: green; background: #c7c7c7; padding: 8px; font-size: 20px"
             );
-            alert("denied")
+            const supabase = await createClient();
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                const { data: tokenData, error: tokenError } = await supabase
+                    .from('users')
+                    .update({ fcm_token: "denied", onboarded: true })  // You must include user id to update existing user
+                    .eq('user_id', user.id)
+                    .select();
+                if (tokenError) {
+                    // handle error
+                    console.error('Error updating token:', tokenError);
+                }
+            }
+            isLoading.current = false;
+            router.push('/home')
             isLoading.current = false;
             return;
         }
