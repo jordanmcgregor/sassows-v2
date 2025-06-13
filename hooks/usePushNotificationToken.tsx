@@ -59,13 +59,12 @@ const useFcmToken = () => {
             setToken(fetchedToken);
             // Store the token in Supabase
             const { data, error } = await supabase.auth.getUser()
-            if (data) {
-                if (data.user) {
-                    const { error } = await supabase
-                        .from('users') // Replace with your table name
-                        .update({ fcm_token: fetchedToken }) // Replace 'your_user_id'
-                        .eq('user_id', data.user.id)
-                }
+            if (data?.user) {
+                const { error } = await supabase
+                    .from('users') // Replace with your table name
+                    .update({ fcm_token: fetchedToken }) // Replace 'your_user_id'
+                    .eq('user_id', data.user.id)
+                return fetchedToken
             }
             if (error) {
                 console.error('Error storing FCM token:', error.message);
