@@ -15,7 +15,9 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
 
     const handleApproveNotifications = async () => {
         const token = await loadToken(); // This waits for the user's permission action
-
+        alert("notificationApprovalByDevice 18")
+        alert(Notification.permission)
+        alert(token)
         // Check if the user granted permission
         if (Notification.permission === "granted" && token) {
             const supabase = createClient();
@@ -27,10 +29,12 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
                     .update({ onboarded: true })
                     .eq('user_id', auth.user.id);
             }
-
+            alert("notificationApprovalByDevice 32")
             router.push('/home');
+            alert("notificationApprovalByDevice 34")
         } else {
             // Optionally show a message/toast if denied
+            alert("notificationApprovalByDevice 37")
             console.warn("Notification permission not granted.");
         }
     };
