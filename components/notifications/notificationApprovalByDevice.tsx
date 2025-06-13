@@ -75,7 +75,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
             {os == 'Android' ? <Android loadToken={handleApproveNotifications} /> : null}
             {/* <Android loadToken={loadToken} /> */}
             <div className="flex-1 flex items-end">
-                <Button onClick={loadToken} variant={"default"} className="w-full h-12">
+                <Button onClick={handleApproveNotifications} variant={"default"} className="w-full h-12">
                     Help me remember the magic
                 </Button>
             </div>
