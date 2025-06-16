@@ -223,10 +223,10 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { ModuleType } from "@/types/modules/type"
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createClient } from '@/utils/supabase/client';
 import { uploadToS3 } from "@/utils/aws/s3/files/upload"
-import { useChild, useUser } from "@/context/selected-child"
+import { Child, useChild, useUser } from "@/context/selected-child"
 import { useRouter } from 'next/navigation';
 import { filesPlan, isFeatureLocked } from "@/lib/plan"
 import { IconAlertSquare, IconCrown, IconLockStar } from "@tabler/icons-react"
@@ -251,7 +251,7 @@ import Link from "next/link"
 
 export function ProfileForm({ module }: { module: ModuleType }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [localSelectedChild, setLocalSelectedChild] = useState();
+    const [localSelectedChild, setLocalSelectedChild] = useState<Child>();
     const [updgradeDialogOpen, setUpdgradeDialogOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { selectedChild, allChildren, setSelectedChild } = useChild()
@@ -446,10 +446,11 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                         {...f}
                                                     />
                                                 ) : type === "select" ? (
-                                                    <Select onValueChange={(val) => {
+                                                    <Select value={localSelectedChild?.id} onValueChange={(val) => {
                                                         const selected = allChildren.find(child => child.id === val)
                                                         if (selected) {
                                                             setSelectedChild(selected)
+                                                            setLocalSelectedChild(selected)
                                                         }
                                                     }}>
                                                         <SelectTrigger className="w-full">

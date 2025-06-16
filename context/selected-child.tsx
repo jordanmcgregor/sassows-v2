@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from 'react';
 
 // 1. Define the shape of your child object
-type Child = {
+export type Child = {
   id: string;
   name: string;
   // add other fields as needed
