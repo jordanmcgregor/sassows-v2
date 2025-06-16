@@ -12,6 +12,7 @@ import { getMemoizedUser } from '@/utils/memoization/supabase/users/getMemoizedU
 import Subscriptions from '@/components/guardian/realtime/subscriptions'
 import PWACheck from '@/components/detection/pwa'
 import DeviceDetailDetection from '@/components/detection/operating-system-and-browser'
+import UpdateTimezone from '@/components/detection/timezone'
 
 export default async function PrivatePage({ children }: { children: React.ReactNode }) {
     const headersList = await headers()
@@ -78,6 +79,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
                         </div>
                     </div>
                     <PWACheck os={os} browser={browser} />
+                    <UpdateTimezone user={userData} />
                 </SidebarInset>
             </SidebarProvider>
         </OnboardedProvider>
