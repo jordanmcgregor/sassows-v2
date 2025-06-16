@@ -57,7 +57,7 @@ export type Field = {
     },
     input: {
         name: string,
-        type: "text" | "textarea" | "dropdown" | "date" | "files",
+        type: "text" | "textarea" | "dropdown" | "date" | "files" | "select",
         required: boolean,
         placeholder: string,
         plan?: Plan

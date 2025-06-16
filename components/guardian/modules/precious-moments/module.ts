@@ -127,6 +127,18 @@ let feature: ModuleType = {
                                 plan: filesPlan
                             }
                         },
+                        {
+                            label: {
+                                title: "Which child does this memory belong to?"
+                            },
+                            input: {
+                                name: "child",
+                                type: "select",
+                                required: true,
+                                placeholder: "",
+                                plan: filesPlan
+                            }
+                        },
                     ]
                 }
             },

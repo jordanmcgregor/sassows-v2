@@ -208,6 +208,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
     Form,
     FormControl,
     FormField,
@@ -244,16 +251,17 @@ import Link from "next/link"
 
 export function ProfileForm({ module }: { module: ModuleType }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [localSelectedChild, setLocalSelectedChild] = useState();
     const [updgradeDialogOpen, setUpdgradeDialogOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { selectedChild } = useChild()
+    const { selectedChild, allChildren, setSelectedChild } = useChild()
     const user = useUser()
     const router = useRouter();
     const fields = module.flyout.record.create.form.fields
 
     const schemaShape = fields.reduce((acc, field) => {
         const { type, required, name } = field.input;
-        if (type === "textarea" || type === "text") {
+        if (type === "textarea" || type === "text" || type === "select") {
             acc[name] = required ? z.string().min(1, { message: `${field.label.title} is required.` }) : z.string().optional();
         } else if (type === "date") {
             acc[name] = required
@@ -437,14 +445,31 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                         className="text-base"
                                                         {...f}
                                                     />
-                                                ) : (
-                                                    <Input
-                                                        type="text"
-                                                        placeholder={placeholder}
-                                                        className="text-base"
-                                                        {...f}
-                                                    />
-                                                )}
+                                                ) : type === "select" ? (
+                                                    <Select onValueChange={(val) => {
+                                                        const selected = allChildren.find(child => child.id === val)
+                                                        if (selected) {
+                                                            setSelectedChild(selected)
+                                                        }
+                                                    }}>
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Select child" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="w-full">
+                                                            {allChildren.map((child) => (
+                                                                <SelectItem key={child.id} value={child.id}>{child.name}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) :
+                                                    (
+                                                        <Input
+                                                            type="text"
+                                                            placeholder={placeholder}
+                                                            className="text-base"
+                                                            {...f}
+                                                        />
+                                                    )}
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
