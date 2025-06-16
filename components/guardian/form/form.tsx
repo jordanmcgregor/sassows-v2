@@ -460,7 +460,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                     <Select value={f.value.toString()}
                                                         onValueChange={(val) => {
                                                             f.onChange(val); // Sets form value
-                                                            const child = allChildren.find((c) => c.id === val);
+                                                            const child = allChildren.find((c) => c.id == val);
                                                             if (child) setSelectedChild(child);
                                                         }}>
                                                         {/* <FormControl> */}
