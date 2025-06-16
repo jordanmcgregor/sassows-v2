@@ -261,7 +261,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
 
     const schemaShape = fields.reduce((acc, field) => {
         const { type, required, name } = field.input;
-        if (type === "textarea" || type === "text" || type === "select") {
+        if (type === "textarea" || type === "text") {
             acc[name] = required ? z.string().min(1, { message: `${field.label.title} is required.` }) : z.string().optional();
         } else if (type === "date") {
             acc[name] = required
@@ -271,6 +271,8 @@ export function ProfileForm({ module }: { module: ModuleType }) {
             acc[name] = required
                 ? z.instanceof(File).refine(file => file.size < 100 * 1024 * 1024, { message: "File must be less than 100MB" })
                 : z.preprocess(val => val instanceof File ? val : undefined, z.instanceof(File).optional());
+        } else if (type === "select") {
+            acc[name] = required ? z.string().nonempty("Please select a child") : z.string().optional();
         }
         return acc;
     }, {} as Record<string, ZodTypeAny>);
@@ -305,6 +307,8 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                     filteredValues[key] = localDateToUtcIso(value);
                 }
             }
+
+            alert(JSON.stringify(filteredValues))
 
             filteredValues.child_id = selectedChild.id;
             // alert(filteredValues.created_at)
@@ -419,14 +423,17 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                 {label}  {(user.products as any).id == 'free' && type === "files" ? <div className="text-primary flex items-center gap-x-1"><Button variant={"link"} asChild><Link href="/upgrade"><IconCrown className="size-6" /> Upgrade to {field.input.plan}</Link></Button></div> : null}
                                             </FormLabel>
                                             {/* <FormLabel className="font-semibold leading-normal">{label}</FormLabel> */}
-                                            <FormControl>
-                                                {type === "textarea" ? (
+                                            {/* <FormControl> */}
+                                            {type === "textarea" ? (
+                                                <FormControl>
                                                     <Textarea
                                                         placeholder={placeholder}
                                                         className="resize-none text-base h-48"
                                                         {...f}
                                                     />
-                                                ) : type === "files" ? (
+                                                </FormControl>
+                                            ) : type === "files" ? (
+                                                <FormControl>
                                                     <Input
                                                         type="file"
                                                         accept="image/png,image/jpeg,video/*,audio/*"
@@ -438,40 +445,48 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                         className="border-none"
                                                         disabled={(user.products as any).id == 'free' ? true : false}
                                                     />
-                                                ) : type === "date" ? (
+                                                </FormControl>
+                                            ) : type === "date" ? (
+                                                <FormControl>
                                                     <Input
                                                         type="date"
                                                         placeholder={placeholder}
                                                         className="text-base"
                                                         {...f}
                                                     />
-                                                ) : type === "select" ? (
-                                                    <Select value={localSelectedChild?.id} onValueChange={(val) => {
-                                                        const selected = allChildren.find(child => child.id === val)
-                                                        if (selected) {
-                                                            setSelectedChild(selected)
-                                                            setLocalSelectedChild(selected)
-                                                        }
-                                                    }}>
+                                                </FormControl>
+                                            ) : type === "select" ? (
+                                                <FormControl>
+                                                    <Select value={f.value.toString()}
+                                                        onValueChange={(val) => {
+                                                            f.onChange(val); // Sets form value
+                                                            const child = allChildren.find((c) => c.id === val);
+                                                            if (child) setSelectedChild(child);
+                                                        }}>
+                                                        {/* <FormControl> */}
                                                         <SelectTrigger className="w-full">
                                                             <SelectValue placeholder="Select child" />
                                                         </SelectTrigger>
+                                                        {/* </FormControl> */}
                                                         <SelectContent className="w-full">
                                                             {allChildren.map((child) => (
-                                                                <SelectItem key={child.id} value={child.id}>{child.name}</SelectItem>
+                                                                <SelectItem key={child.id} value={child.id.toString()}>{child.name}</SelectItem>
                                                             ))}
                                                         </SelectContent>
                                                     </Select>
-                                                ) :
-                                                    (
+                                                </FormControl>
+                                            ) :
+                                                (
+                                                    <FormControl>
                                                         <Input
                                                             type="text"
                                                             placeholder={placeholder}
                                                             className="text-base"
                                                             {...f}
                                                         />
-                                                    )}
-                                            </FormControl>
+                                                    </FormControl>
+                                                )}
+                                            {/* </FormControl> */}
                                             <FormMessage />
                                         </FormItem>
                                     )}

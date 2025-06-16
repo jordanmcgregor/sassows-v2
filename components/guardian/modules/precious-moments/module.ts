@@ -132,7 +132,7 @@ let feature: ModuleType = {
                                 title: "Which child does this memory belong to?"
                             },
                             input: {
-                                name: "child",
+                                name: "child_id",
                                 type: "select",
                                 required: true,
                                 placeholder: "",
