@@ -308,11 +308,11 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                 }
             }
 
-            alert(JSON.stringify(filteredValues))
+            // alert(JSON.stringify(filteredValues))
 
             filteredValues.child_id = selectedChild.id;
             // alert(filteredValues.created_at)
-            alert(console.log(user))
+            // alert(console.log(user))
             if (!user.timezone) {
                 // Get user's timezone string on the client side
                 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
