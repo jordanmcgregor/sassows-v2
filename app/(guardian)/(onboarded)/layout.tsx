@@ -10,10 +10,13 @@ import { OnboardedProvider } from '@/context/selected-child'
 import { headers } from 'next/headers'
 import { getMemoizedUser } from '@/utils/memoization/supabase/users/getMemoizedUser';
 import Subscriptions from '@/components/guardian/realtime/subscriptions'
+import PWACheck from '@/components/detection/pwa'
+import DeviceDetailDetection from '@/components/detection/operating-system-and-browser'
 
 export default async function PrivatePage({ children }: { children: React.ReactNode }) {
     const headersList = await headers()
     const path = headersList.get('x-pathname') || '/'
+    const { os, browser } = await DeviceDetailDetection()
 
     const supabase = await createClient()
     const { data, error } = await supabase.auth.getUser()
@@ -74,6 +77,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
                             </div>
                         </div>
                     </div>
+                    <PWACheck os={os} browser={browser} />
                 </SidebarInset>
             </SidebarProvider>
         </OnboardedProvider>
