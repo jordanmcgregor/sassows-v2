@@ -25,12 +25,15 @@ export default function PWACheck({ os, browser }: { os: string, browser: string 
                 }
                 router.push('/home')
             }
+            setCheckingIsPwa(false)
         }
         const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
         if (isPWA) {
             updatePwa()
         }
-        setCheckingIsPwa(false)
+        else {
+            setCheckingIsPwa(false)
+        }
     }, [])
     return (
         <div className={checkingIsPwa ? '' : 'hidden'}>
