@@ -8,7 +8,6 @@ export default async function Notifications() {
     return (
         <>
             <NotificationApprovalByDevice os={os} browser={browser} />
-            <PWACheck os={os} browser={browser} />
         </>
     )
 }
