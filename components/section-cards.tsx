@@ -95,7 +95,7 @@ export async function SectionCards({ data }: { data: any }) {
     .schema('gamification')
     .from('achievements')
     .select()
-    .order('xp_reward', { ascending: true })
+    .order('xp', { ascending: true })
 
   const { data: { user } } = await supabase.auth.getUser()
 
