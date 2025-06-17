@@ -12,7 +12,7 @@ export default function UpdateTimezone({ user }: { user: User }) {
                 const { data: recordData, error: recordError } = await supabase
                     .from('users')
                     .update({ timezone: timezone })  // You must include user id to update existing user
-                    .eq('user_id', user?.user_id)
+                    .eq('id', user?.id)
                     .select();
                 if (recordError) {
                     // handle error

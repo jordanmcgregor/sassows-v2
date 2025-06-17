@@ -60,3 +60,22 @@ export const updateSession = async (request: NextRequest) => {
     });
   }
 };
+
+
+// --------------------------------------------------------------------------------------
+// -------------------------- Created as Aftermarket Component --------------------------
+// --------------------------------------------------------------------------------------
+export function createMiddlewareSupabaseClient(request: NextRequest) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: () => {
+          // no-op in middleware
+        },
+      },
+    }
+  );
+}

@@ -11,52 +11,43 @@ import { headers } from 'next/headers'
 import { getMemoizedUser } from '@/utils/memoization/supabase/users/getMemoizedUser';
 import Subscriptions from '@/components/guardian/realtime/subscriptions'
 import PWACheck from '@/components/detection/pwa'
-import DeviceDetailDetection from '@/components/detection/operating-system-and-browser'
+import deviceDetailDetection from '@/components/detection/operating-system-and-browser'
 import UpdateTimezone from '@/components/detection/timezone'
 
 export default async function PrivatePage({ children }: { children: React.ReactNode }) {
     const headersList = await headers()
     const path = headersList.get('x-pathname') || '/'
-    const { os, browser } = await DeviceDetailDetection()
+    const { os, browser } = await deviceDetailDetection()
 
     const supabase = await createClient()
-    const { data, error } = await supabase.auth.getUser()
+    // const { data: authUser, error: authUserError } = await supabase.auth.getUser()
 
-    const { data: userData, error: userError } = await supabase
+    const { data: publicUser, error: publicUserError } = await supabase
         .from('users')
-        .select(`timezone,
-            user_id,
-            onboarded,
-            products (
-                    id,
-                    name
-                    )`)
+        .select(`timezone,id,onboarded,pwa,fcm_token,products(id,name),children(id,name)`)
         .single()
 
-    console.log(userData)
+    console.log(publicUser)
 
-    if (error || !data?.user) {
+    if (publicUserError || !publicUser?.id) {
         redirect('/sign-in')
     }
-    // const user = await getMemoizedUser()
-
-    const userId = data.user.id
-    const { data: childrenData, error: childrenError } = await supabase
-        .from('children')
-        .select('*')
-        .eq('user_id', userId)
 
     // Safety: redirect or render a fallback if no children
-    if (!childrenData || childrenData.length === 0) {
-        redirect('/onboarding') // or show modal/form here if client-side
+    if (!publicUser?.children || publicUser?.children.length === 0) {
+        redirect('/onboarding/add-children') // or show modal/form here if client-side
     }
 
-    if (!userData?.onboarded) {
-        redirect('/onboarding/notifications')
+    if (!publicUser?.pwa) {
+        redirect('/onboarding/download-app') // or show modal/form here if client-side
+    }
+
+    if (!publicUser?.fcm_token) {
+        redirect('/onbaording/notifications')
     }
 
     return (
-        <OnboardedProvider initialChildren={childrenData} user={userData}>
+        <OnboardedProvider initialChildren={publicUser.children} user={publicUser}>
             <Subscriptions />
             <SidebarProvider
                 style={
@@ -79,7 +70,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
                         </div>
                     </div>
                     <PWACheck os={os} browser={browser} />
-                    <UpdateTimezone user={userData} />
+                    <UpdateTimezone user={publicUser} />
                 </SidebarInset>
             </SidebarProvider>
         </OnboardedProvider>

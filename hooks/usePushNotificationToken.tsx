@@ -63,7 +63,7 @@ const useFcmToken = () => {
                 const { error } = await supabase
                     .from('users') // Replace with your table name
                     .update({ fcm_token: fetchedToken }) // Replace 'your_user_id'
-                    .eq('user_id', data.user.id)
+                    .eq('id', data.user.id)
                 return fetchedToken
             }
             if (error) {

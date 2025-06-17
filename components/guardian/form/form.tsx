@@ -322,7 +322,7 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                     const { data: recordData, error: recordError } = await supabase
                         .from('users')
                         .update({ timezone: timezone })  // You must include user id to update existing user
-                        .eq('user_id', user.id)
+                        .eq('id', user.id)
                         .select();
                     if (recordError) {
                         // handle error

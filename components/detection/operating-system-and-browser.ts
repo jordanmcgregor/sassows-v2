@@ -22,7 +22,7 @@ function detectBrowser(ua: string): string {
     return 'Unknown'
 }
 
-export default async function DeviceDetailDetection() {
+export default async function deviceDetailDetection() {
     const headersList = await headers()
     const ua = headersList.get('user-agent') || ''
 

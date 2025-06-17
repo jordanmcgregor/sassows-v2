@@ -21,8 +21,11 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { createClient } from '@/utils/supabase/client';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import PWACheck from "@/components/detection/pwa"
+import { useUser } from "@/context/selected-child"
+import Overlay from "@/components/submitting/overlay"
 
 const childSchema = z.object({
     name: z.string().min(1, {
@@ -41,7 +44,11 @@ export default function ProfileForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
+    const user = useUser()
+
     const router = useRouter()
+
+   
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -81,7 +88,7 @@ export default function ProfileForm() {
         setIsSubmitting(false)
     }
 
-    return (
+    return (<>
         <div className="w-full p-12">
             <Card className="m-auto">
                 <CardHeader>
@@ -149,5 +156,6 @@ export default function ProfileForm() {
                 </CardContent>
             </Card>
         </div>
+    </>
     )
 }

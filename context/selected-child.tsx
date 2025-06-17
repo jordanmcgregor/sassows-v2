@@ -21,9 +21,14 @@ const ChildContext = createContext<ChildContextType | undefined>(undefined);
 
 
 export type User = {
-  user_id: string,
+  id: string,
   timezone: string,
+  onboarded: boolean | null,
+  pwa: boolean | null,
+  fcm_token: string,
   products: { id: string, name: string }[]
+  children: Child[]
+
   // extend with more fields as needed
 } | null;
 

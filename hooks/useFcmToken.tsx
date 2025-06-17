@@ -90,7 +90,7 @@ const useFcmToken = () => {
       const { data: tokenData, error: tokenError } = await supabase
         .from('users')
         .update({ fcm_token: token, onboarded: true })  // You must include user id to update existing user
-        .eq('user_id', user.id)
+        .eq('id', user.id)
         .select();
       if (tokenError) {
         // handle error

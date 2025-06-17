@@ -70,7 +70,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
                 const { data: tokenData, error: tokenError } = await supabase
                     .from('users')
                     .update({ fcm_token: "denied", onboarded: true })  // You must include user id to update existing user
-                    .eq('user_id', user.id)
+                    .eq('id', user.id)
                     .select();
                 if (tokenError) {
                     // handle error
@@ -115,7 +115,7 @@ export default function NotificationApprovalByDevice({ os, browser }: { os: any,
             const { data: tokenData, error: tokenError } = await supabase
                 .from('users')
                 .update({ fcm_token: token, onboarded: true })  // You must include user id to update existing user
-                .eq('user_id', user.id)
+                .eq('id', user.id)
                 .select();
             if (tokenError) {
                 // handle error

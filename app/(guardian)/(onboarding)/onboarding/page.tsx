@@ -33,7 +33,7 @@ export default function CardWithForm() {
                 </Card>
             </div>
 
-            <div className="h-full">
+            {/* <div className="h-full">
                 <Card className="h-full flex flex-col">
                     <CardHeader>
                         <CardTitle className="leading-normal">Stay Connected with Your Nieces, Nephews, or Grandkids</CardTitle>
@@ -42,7 +42,6 @@ export default function CardWithForm() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-1">
-                        {/* Optional content */}
                     </CardContent>
                     <CardFooter>
                         <Button className="w-full" asChild>
@@ -50,7 +49,7 @@ export default function CardWithForm() {
                         </Button>
                     </CardFooter>
                 </Card>
-            </div>
+            </div> */}
         </div>
     )
 }

@@ -1,3 +1,4 @@
+import PWACheck from '@/components/detection/pwa'
 import AndroidPWAInstructions from '@/components/guardian/onboarding/pwa/download/android'
 import IphonePWAInstructions from '@/components/guardian/onboarding/pwa/download/iphone'
 import { headers } from 'next/headers'
@@ -37,12 +38,16 @@ export default async function Page() {
                 {/* <p><strong>Operating System:</strong> {os}</p>
                 <p><strong>Browser:</strong> {browser}</p> */}
                 <IphonePWAInstructions browser={browser} />
+                <PWACheck os={os} browser={browser} />
             </>
         )
     }
     else if (os == 'Android') {
         return (
-            <AndroidPWAInstructions />
+            <>
+                <AndroidPWAInstructions />
+                <PWACheck os={os} browser={browser} />
+            </>
         )
     }
     else {
