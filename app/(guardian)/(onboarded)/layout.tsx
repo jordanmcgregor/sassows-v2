@@ -43,7 +43,7 @@ export default async function PrivatePage({ children }: { children: React.ReactN
     }
 
     if (!publicUser?.fcm_token) {
-        redirect('/onbaording/notifications')
+        redirect('/onboarding/notifications')
     }
 
     return (
