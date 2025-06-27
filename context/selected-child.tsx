@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
+import { createClient } from '@/utils/supabase/client'
+import * as pixel from "@/components/lib/mpixel";
 
 // 1. Define the shape of your child object
 export type Child = {
@@ -26,6 +28,7 @@ export type User = {
   onboarded: boolean | null,
   pwa: boolean | null,
   fcm_token: string,
+  meta_lead: string,
   products: { id: string, name: string }[]
   children: Child[]
 
@@ -101,6 +104,27 @@ export function OnboardedProvider({
       setSelectedChildState(initialChildren[0]);
     }
   }, [initialChildren]);
+
+  useEffect(() => {
+    const setMetaLead = async () => {
+      const generateEventId = () => {
+        return Array.from({ length: 20 }, () =>
+          Math.random().toString(36).charAt(2)
+        ).join('');
+      };
+      const eventObject = { eventId: generateEventId() }
+      pixel.event('Lead', {}, eventObject)
+      const response = fetch(`/api/met/capi/lead?eventId=${eventObject.eventId}`)
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from("users")
+        .update({ meta_lead: eventObject.eventId })
+        .eq('id', user?.id)
+    }
+    if (!user?.meta_lead) {
+      setMetaLead()
+    }
+  }, [])
 
   const setSelectedChild = (child: Child) => {
     localStorage.setItem('selectedChild', JSON.stringify(child));

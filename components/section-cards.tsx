@@ -148,7 +148,7 @@ export async function SectionCards({ data }: { data: any }) {
       let { data: streakCreated, error: streakError } = await supabase
         .schema('gamification')
         .from('daily_streaks')
-        .insert([{ current_streak: 0, longest_streak: 0, last_entry_date: new Date(0).toISOString().split("T")[0] }])
+        .insert([{ current_streak: 0, longest_streak: 0, last_entry_date: new Date(0).toISOString() }])
         .select()
         .single()
       streak = streakCreated

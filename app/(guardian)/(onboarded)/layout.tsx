@@ -24,22 +24,23 @@ export default async function PrivatePage({ children }: { children: React.ReactN
 
     const { data: publicUser, error: publicUserError } = await supabase
         .from('users')
-        .select(`timezone,id,onboarded,pwa,fcm_token,products(id,name),children(id,name)`)
+        .select(`timezone,id,onboarded,pwa,fcm_token,meta_lead,products(id,name),children(id,name)`)
         .single()
-
-    console.log(publicUser)
 
     if (publicUserError || !publicUser?.id) {
         redirect('/sign-in')
     }
 
-    // Safety: redirect or render a fallback if no children
+    // -------------------------------------------------------------------------------------
+    // -------------------------- Incomplete Onboarding Redirects --------------------------
+    // -------------------------------------------------------------------------------------
+
     if (!publicUser?.children || publicUser?.children.length === 0) {
-        redirect('/onboarding/add-children') // or show modal/form here if client-side
+        redirect('/onboarding/add-children') 
     }
 
     if (!publicUser?.pwa) {
-        redirect('/onboarding/download-app') // or show modal/form here if client-side
+        redirect('/onboarding/download-app')
     }
 
     if (!publicUser?.fcm_token) {
