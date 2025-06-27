@@ -149,8 +149,21 @@ export function OnboardedProvider({
           `FBQ error: ${String(error)}`
         );
       }
+      try {
+        const response = fetch(`/api/meta/capi/lead?eventId=${eventObject.eventId}`);
+        sendSlackMessageViaApi(
+          process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+          `API response: ${response}`
+        );
+      }
+      catch (error) {
+        sendSlackMessageViaApi(
+          process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+          `API error: ${error}`
+        );
+      }
 
-      fetch(`/api/meta/capi/lead?eventId=${eventObject.eventId}`);
+
 
       const supabase = createClient();
       const { data, error } = await supabase
