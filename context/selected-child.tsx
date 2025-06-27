@@ -153,7 +153,7 @@ export function OnboardedProvider({
         const response = fetch(`/api/meta/capi/lead?eventId=${eventObject.eventId}`);
         sendSlackMessageViaApi(
           process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
-          `API response: ${response}`
+          `API response: ${(await response).json()}`
         );
       }
       catch (error) {
@@ -162,8 +162,6 @@ export function OnboardedProvider({
           `API error: ${error}`
         );
       }
-
-
 
       const supabase = createClient();
       const { data, error } = await supabase
