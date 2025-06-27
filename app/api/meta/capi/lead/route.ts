@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 // import { sendSlackMessageViaApi } from '@/app/actions/slack/send-message';
 // import { PurchaseFacebookCapi } from '@/types/facebook/capi/purchase';
 import { Lead } from '@/types/meta/capi/lead/type';
-import { sha256 } from 'js-sha256';
+// import { sha256 } from 'js-sha256';
 
 // https://graph.facebook.com/{API_VERSION}/{PIXEL_ID}/events?access_token={TOKEN}
 const capi_base_endpoint = process.env.META_CAPI_ENDPOINT_BASE
