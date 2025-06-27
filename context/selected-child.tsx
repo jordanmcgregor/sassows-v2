@@ -113,15 +113,21 @@ export function OnboardedProvider({
           Math.random().toString(36).charAt(2)
         ).join('');
       };
+
       const eventObject = { eventId: generateEventId() }
+      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${eventObject.eventId}` as string)
       pixel.event('Lead', {}, eventObject)
       const response = fetch(`/api/met/capi/lead?eventId=${eventObject.eventId}`)
+      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${response}` as string)
       const supabase = createClient()
       const { data, error } = await supabase
         .from("users")
         .update({ meta_lead: eventObject.eventId })
         .eq('id', user?.id)
+      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${data}` as string)
+      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${error}` as string)
     }
+
     sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `Entered selected-child line 125` as string)
     if (!user?.meta_lead) {
       sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `Entered selected-child line 127 ${user?.meta_lead}` as string)
