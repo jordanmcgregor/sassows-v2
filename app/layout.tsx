@@ -13,6 +13,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+declare global {
+  interface Window {
+    pintrk: any;
+    config: any;
+    google: any;
+    fbq: any
+  }
+}
+
 export const metadata: Metadata = {
   title: "Sassows",
   description:
