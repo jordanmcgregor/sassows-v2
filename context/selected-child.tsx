@@ -3,6 +3,7 @@
 import { createContext, useContext, useState } from 'react';
 import { createClient } from '@/utils/supabase/client'
 import * as pixel from "@/components/lib/mpixel";
+import { sendSlackMessageViaApi } from '@/app/actions/slack/send-message';
 
 // 1. Define the shape of your child object
 export type Child = {
@@ -121,7 +122,9 @@ export function OnboardedProvider({
         .update({ meta_lead: eventObject.eventId })
         .eq('id', user?.id)
     }
+    sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `Entered selected-child line 125` as string)
     if (!user?.meta_lead) {
+      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `Entered selected-child line 127 ${user?.meta_lead}` as string)
       setMetaLead()
     }
   }, [])
