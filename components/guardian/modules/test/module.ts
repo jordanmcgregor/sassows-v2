@@ -115,7 +115,7 @@ export { service };
 //                         },
 //                         {
 //                             label: {
-//                                 title: "Videos or Images"
+//                                 title: "Images"
 //                             },
 //                             input: {
 //                                 name: "files",

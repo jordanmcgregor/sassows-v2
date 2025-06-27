@@ -128,7 +128,7 @@ let feature: ModuleType = {
                         },
                         {
                             label: {
-                                title: "Videos or Images"
+                                title: "Images"
                             },
                             input: {
                                 name: "files",
