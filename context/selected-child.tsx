@@ -116,7 +116,13 @@ export function OnboardedProvider({
 
       const eventObject = { eventId: generateEventId() }
       sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${eventObject.eventId}` as string)
-      pixel.event('Lead', {}, eventObject)
+      try {
+        pixel.event('Lead', {}, eventObject)
+      }
+      catch (error) {
+        sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${error}` as string)
+      }
+
       const response = fetch(`/api/met/capi/lead?eventId=${eventObject.eventId}`)
       sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${response}` as string)
       const supabase = createClient()
