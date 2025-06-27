@@ -150,10 +150,10 @@ export function OnboardedProvider({
         );
       }
       try {
-        const response = fetch(`/api/meta/capi/lead?eventId=${eventObject.eventId}`);
+        const response = await fetch(`/api/meta/capi/lead?eventId=${eventObject.eventId}`);
         sendSlackMessageViaApi(
           process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
-          `API response: ${(await response).json()}`
+          `API response: ${response.json()}`
         );
       }
       catch (error) {
