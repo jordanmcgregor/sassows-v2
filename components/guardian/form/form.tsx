@@ -436,7 +436,8 @@ export function ProfileForm({ module }: { module: ModuleType }) {
                                                 <FormControl>
                                                     <Input
                                                         type="file"
-                                                        accept="image/png,image/jpeg,video/*,audio/*"
+                                                        // accept="image/png,image/jpeg,video/*,audio/*"
+                                                        accept={(user.products as any).id == 'unlimited' ? "image/png,image/jpeg,video/*,audio/*" : "image/png,image/jpeg,audio/*"}
                                                         onChange={(e) =>
                                                             form.setValue(name, e.target.files ? Array.from(e.target.files) : [])
                                                         }
