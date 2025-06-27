@@ -159,7 +159,7 @@ export function OnboardedProvider({
       catch (error) {
         sendSlackMessageViaApi(
           process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
-          `API error: ${error}`
+          `API error: ${String(error)}`
         );
       }
 
