@@ -135,10 +135,10 @@ export function OnboardedProvider({
       };
 
       const eventObject = { eventId: generateEventId() };
-      sendSlackMessageViaApi(
-        process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
-        `Generated eventId: ${eventObject.eventId}`
-      );
+      // sendSlackMessageViaApi(
+      //   process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+      //   `Generated eventId: ${eventObject.eventId}`
+      // );
 
       try {
         await waitForFbq();
@@ -151,10 +151,10 @@ export function OnboardedProvider({
       }
       try {
         const response = await fetch(`/api/meta/capi/lead?eventId=${eventObject.eventId}`);
-        sendSlackMessageViaApi(
-          process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
-          `API response: ${response.json()}`
-        );
+        // sendSlackMessageViaApi(
+        //   process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+        //   `API response: ${response.json()}`
+        // );
       }
       catch (error) {
         sendSlackMessageViaApi(
@@ -169,16 +169,16 @@ export function OnboardedProvider({
         .update({ meta_lead: eventObject.eventId })
         .eq("id", user?.id);
 
-      sendSlackMessageViaApi(
-        process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
-        `Supabase update: ${JSON.stringify(data)} | ${JSON.stringify(error)}`
-      );
+      // sendSlackMessageViaApi(
+      //   process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+      //   `Supabase update: ${JSON.stringify(data)} | ${JSON.stringify(error)}`
+      // );
     };
 
-    sendSlackMessageViaApi(
-      process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
-      `Entered useEffect, meta_lead: ${user?.meta_lead}`
-    );
+    // sendSlackMessageViaApi(
+    //   process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+    //   `Entered useEffect, meta_lead: ${user?.meta_lead}`
+    // );
 
     if (!user?.meta_lead) {
       setMetaLead();
