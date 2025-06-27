@@ -107,6 +107,26 @@ export function OnboardedProvider({
   }, [initialChildren]);
 
   useEffect(() => {
+    const waitForFbq = (): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        const maxAttempts = 20;
+        let attempts = 0;
+
+        const check = () => {
+          if (typeof window !== "undefined" && typeof window.fbq === "function") {
+            resolve();
+          } else if (attempts < maxAttempts) {
+            attempts++;
+            setTimeout(check, 250); // check every 250ms
+          } else {
+            reject(new Error("window.fbq not initialized"));
+          }
+        };
+
+        check();
+      });
+    };
+
     const setMetaLead = async () => {
       const generateEventId = () => {
         return Array.from({ length: 20 }, () =>
@@ -114,32 +134,45 @@ export function OnboardedProvider({
         ).join('');
       };
 
-      const eventObject = { eventId: generateEventId() }
-      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${eventObject.eventId}` as string)
+      const eventObject = { eventId: generateEventId() };
+      sendSlackMessageViaApi(
+        process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+        `Generated eventId: ${eventObject.eventId}`
+      );
+
       try {
-        pixel.event('Lead', {}, eventObject)
-      }
-      catch (error) {
-        sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${error}` as string)
+        await waitForFbq();
+        pixel.event("Lead", {}, eventObject);
+      } catch (error) {
+        sendSlackMessageViaApi(
+          process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+          `FBQ error: ${String(error)}`
+        );
       }
 
-      const response = fetch(`/api/met/capi/lead?eventId=${eventObject.eventId}`)
-      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${response}` as string)
-      const supabase = createClient()
+      fetch(`/api/meta/capi/lead?eventId=${eventObject.eventId}`);
+
+      const supabase = createClient();
       const { data, error } = await supabase
         .from("users")
         .update({ meta_lead: eventObject.eventId })
-        .eq('id', user?.id)
-      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${data}` as string)
-      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `${error}` as string)
-    }
+        .eq("id", user?.id);
 
-    sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `Entered selected-child line 125` as string)
+      sendSlackMessageViaApi(
+        process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+        `Supabase update: ${JSON.stringify(data)} | ${JSON.stringify(error)}`
+      );
+    };
+
+    sendSlackMessageViaApi(
+      process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL,
+      `Entered useEffect, meta_lead: ${user?.meta_lead}`
+    );
+
     if (!user?.meta_lead) {
-      sendSlackMessageViaApi(process.env.NEXT_PUBLIC_SLACK_ERROR_REPORTING_CHANNEL, `Entered selected-child line 127 ${user?.meta_lead}` as string)
-      setMetaLead()
+      setMetaLead();
     }
-  }, [])
+  }, []);
 
   const setSelectedChild = (child: Child) => {
     localStorage.setItem('selectedChild', JSON.stringify(child));
