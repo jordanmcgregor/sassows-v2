@@ -19,30 +19,16 @@ export async function GET(request: NextRequest) {
     })
     console.log(error)
     if (!error) {
-      // redirect user to specified redirect URL or root of app
+      // If verification is successful, redirect the user
       redirect(next)
-    } else if (error?.code === 'otp_expired') {
-      // If the token is expired, try to resend the OTP
-      const { data: { user } } = await supabase.auth.getUser()
-
-      if (user?.email) {
-        const { error: resendError } = await supabase.auth.resend({
-          type: 'signup', // or 'email' depending on your OTP type
-          email: user.email,
-        })
-
-        if (resendError) {
-          console.error('Error resending OTP:', resendError)
-          // Redirect to an error page or show a message to the user
-          redirect('/error?message=Failed to resend confirmation code.')
-        } else {
-          // Redirect to a page indicating that a new code has been sent
-          redirect('/confirm?message=A new confirmation code has been sent to your email.')
-        }
-      } else {
-        // If email is not available, redirect to a generic error
-        redirect('/error?message=Could not resend confirmation code. User email not found.')
-      }
+    } else if (error?.message === 'Token has expired or is invalid') {
+      // If the token is expired or invalid, we can't get the user from the session.
+      // Redirect to a page that prompts the user for their email to resend.
+      redirect('/resend-otp?expired=true') // A new route for resending
+    } else {
+      // Handle other verification errors (e.g., "User not found", "Invalid token")
+      console.error('OTP verification error:', error)
+      redirect(`/error?message=${encodeURIComponent(error?.message || 'OTP verification failed.')}`)
     }
   }
 
