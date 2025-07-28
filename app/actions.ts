@@ -140,6 +140,42 @@ export const signOutAction = async () => {
   return redirect("/sign-in");
 };
 
+export type ResendOtpState = {
+  error?: string | null;
+  success?: string | null;
+};
+
+export const resendOtp = async (prevState: ResendOtpState, formData: FormData) => {
+  const email = formData.get("email")?.toString();
+  if (!email) {
+    return { error: "Email is required." }; // Return an error object
+  }
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+  // Determine the correct emailRedirectTo.
+  // This should point to your frontend page that handles OTP verification.
+  // Based on our previous discussion, this is your /auth/callback page.
+  const emailRedirectTo = `${origin}/auth/callback`; // Construct the full URL
+
+  const { error: resendError } = await supabase.auth.resend({
+    type: 'signup', // Or 'email', depending on the original OTP purpose
+    email: email,
+    options: {
+      emailRedirectTo: emailRedirectTo // Use the constructed URL
+    }
+  });
+
+  if (resendError) {
+    console.error('Server Action - Error resending OTP:', resendError);
+    // Return a more user-friendly error message
+    return { error: `Failed to send confirmation code: ${resendError.message}` };
+  }
+
+  // Success. Return a success message.
+  return { success: 'A new confirmation code has been sent to your email. Please check your inbox.' };
+};
+
+
 // ---------------------------------------------------------------------------------
 // ---------------------------------- PWA Actions ----------------------------------
 // ---------------------------------------------------------------------------------
@@ -149,29 +185,29 @@ webpush.setVapidDetails(
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
   process.env.VAPID_PRIVATE_KEY!
 )
- 
+
 let subscription: PushSubscription | null = null
- 
+
 export async function subscribeUser(sub: PushSubscription) {
   subscription = sub
   // In a production environment, you would want to store the subscription in a database
   // For example: await db.subscriptions.create({ data: sub })
   return { success: true }
 }
- 
+
 export async function unsubscribeUser() {
   subscription = null
   // In a production environment, you would want to remove the subscription from the database
   // For example: await db.subscriptions.delete({ where: { ... } })
   return { success: true }
 }
- 
+
 export async function sendNotification(message: string) {
   console.log(subscription)
   if (!subscription) {
     throw new Error('No subscription available')
   }
- 
+
   try {
     await webpush.sendNotification(
       subscription,
