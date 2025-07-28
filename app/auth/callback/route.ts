@@ -21,142 +21,31 @@ export async function GET(request: NextRequest) {
     if (!error) {
       // redirect user to specified redirect URL or root of app
       redirect(next)
+    } else if (error?.code === 'otp_expired') {
+      // If the token is expired, try to resend the OTP
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (user?.email) {
+        const { error: resendError } = await supabase.auth.resend({
+          type: 'signup', // or 'email' depending on your OTP type
+          email: user.email,
+        })
+
+        if (resendError) {
+          console.error('Error resending OTP:', resendError)
+          // Redirect to an error page or show a message to the user
+          redirect('/error?message=Failed to resend confirmation code.')
+        } else {
+          // Redirect to a page indicating that a new code has been sent
+          redirect('/confirm?message=A new confirmation code has been sent to your email.')
+        }
+      } else {
+        // If email is not available, redirect to a generic error
+        redirect('/error?message=Could not resend confirmation code. User email not found.')
+      }
     }
   }
 
   // redirect the user to an error page with some instructions
   redirect('/error')
 }
-
-// export async function GET(request: Request) {
-//   // The `/auth/callback` route is required for the server-side auth flow implemented
-//   // by the SSR package. It exchanges an auth code for the user's session.
-//   // https://supabase.com/docs/guides/auth/server-side/nextjs
-//   const requestUrl = new URL(request.url);
-//   const code = requestUrl.searchParams.get("code");
-//   const origin = requestUrl.origin;
-//   const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
-
-//   console.log("Code: " + code,
-//     "Request URL: " + requestUrl,
-//     "Origin: " + origin,
-//     "redirectTo: " + redirectTo
-//   )
-
-
-//   if (code) {
-//     try {
-//       const supabase = await createClient();
-
-
-//       // Exchange the code for a session
-//       const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-
-//       if (exchangeError) {
-//         console.log('Error exchanging code for session:', exchangeError);
-//         return NextResponse.redirect(`${origin}/error`);
-//       }
-
-//       // Only try to get user info if the exchange was successful
-//       const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-//       if (userError) {
-//         console.log('Error fetching user after code exchange:', userError);
-//         return NextResponse.redirect(`${origin}/error`);
-//       }
-
-//       console.log('Authenticated user:', user);
-//     } catch (error) {
-//       console.error('Unexpected error during authentication:', error);
-//       return NextResponse.redirect(`${origin}/error`);
-//     }
-//   }
-
-//   // Determine where to redirect the user
-//   if (redirectTo) {
-//     return NextResponse.redirect(`${origin}${redirectTo}`);
-//   }
-
-//   // URL to redirect to after sign up process completes
-//   return NextResponse.redirect(`${origin}/home`);
-// }
-
-
-
-// export async function GET(request: Request) {
-//   // The `/auth/callback` route is required for the server-side auth flow implemented
-//   // by the SSR package. It exchanges an auth code for the user's session.
-//   // https://supabase.com/docs/guides/auth/server-side/nextjs
-//   const requestUrl = new URL(request.url);
-//   const code = requestUrl.searchParams.get("code");
-//   const origin = requestUrl.origin;
-//   const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
-
-//   if (code) {
-//     // const supabase = await createClient();
-//     // await supabase.auth.exchangeCodeForSession(code);
-
-//     const supabase = await createClient();
-//     await supabase.auth.exchangeCodeForSession(code);
-
-//     // 🛠 Fetch user after exchanging code
-//     const { data: { user }, error } = await supabase.auth.getUser();
-//     console.log(user)
-//     console.log("")
-
-//     if (error || !user) {
-//       console.error('Error fetching user after code exchange:', error);
-//       return NextResponse.redirect(`${origin}/error`);
-//     }
-//   }
-
-//   console.log(redirectTo)
-//   console.log("")
-//   if (redirectTo) {
-//     return NextResponse.redirect(`${origin}${redirectTo}`);
-//   }
-
-//   // URL to redirect to after sign up process completes
-//   return NextResponse.redirect(`${origin}/home`);
-// }
-
-// import { createClient } from "@/utils/supabase/server";
-// import { NextResponse } from "next/server";
-
-// export async function GET(request: Request) {
-//   // The `/auth/callback` route is required for the server-side auth flow implemented
-//   // by the SSR package. It exchanges an auth code for the user's session.
-//   // https://supabase.com/docs/guides/auth/server-side/nextjs
-//   const requestUrl = new URL(request.url);
-//   const code = requestUrl.searchParams.get("code");
-//   const origin = requestUrl.origin;
-//   const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
-
-//   if (code) {
-//     const supabase = await createClient();
-//     await supabase.auth.exchangeCodeForSession(code);
-
-//     // 🛠 Fetch user after exchanging code
-//     const { data: { user }, error } = await supabase.auth.getUser();
-
-//     if (error || !user) {
-//       console.error('Error fetching user after code exchange:', error);
-//       return NextResponse.redirect(`${origin}/error`);
-//     }
-
-//     // 🛠 Insert empty subscription record for the new user
-//     await supabase.from('subscriptions').insert({
-//       is_active: false,   // Subscription is inactive initially
-//       created_at: new Date(),
-//       updated_at: new Date(),
-//     });
-//   }
-
-//   if (redirectTo) {
-//     return NextResponse.redirect(`${origin}${redirectTo}`);
-//   }
-
-//   // Default redirect
-//   return NextResponse.redirect(`${origin}/home`);
-// }
-
