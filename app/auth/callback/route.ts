@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     if (!error) {
       // If verification is successful, redirect the user
       redirect(next)
-    } else if (error?.message === 'Token has expired or is invalid') {
+    } else if (error?.code === 'otp_expired') {
       // If the token is expired or invalid, we can't get the user from the session.
       // Redirect to a page that prompts the user for their email to resend.
       redirect('/resend-otp?expired=true') // A new route for resending
