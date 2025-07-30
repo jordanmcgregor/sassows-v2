@@ -1,5 +1,5 @@
 import Script from 'next/script';
-import { Analytics } from "@vercel/analytics/next"
+
 
 export function LayoutScripts() {
     if (process.env.NEXT_PUBLIC_ENVIRONMENT != 'development') {
@@ -13,7 +13,6 @@ export function LayoutScripts() {
         return (
             <>
                 <Heap />
-                <Analytics />
                 {/* <Tidio /> */}
             </>
         );
