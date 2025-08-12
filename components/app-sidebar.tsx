@@ -92,12 +92,12 @@ const data = {
       icon: IconClockHeart,
       active: true
     },
-    {
-      title: "Service Worker",
-      url: "/test/service-worker",
-      icon: IconClockHeart,
-      active: true
-    },
+    // {
+    //   title: "Service Worker",
+    //   url: "/test/service-worker",
+    //   icon: IconClockHeart,
+    //   active: true
+    // },
   ],
   navClouds: [
     {

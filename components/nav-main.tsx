@@ -52,13 +52,13 @@ export function NavMain() {
               </SidebarMenuItem>
             )
           })}
-          <SidebarMenuItem >
+          {/* <SidebarMenuItem >
             <SidebarMenuButton >
               <Link href={'/test/service-worker'} className="w-full">
                 <span>Service Worker</span>
               </Link>
             </SidebarMenuButton>
-          </SidebarMenuItem>
+          </SidebarMenuItem> */}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
