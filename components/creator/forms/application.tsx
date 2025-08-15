@@ -120,6 +120,7 @@ export default function CreatorApplicationForm() {
                     }
                 }
                 await setMetaLead();
+                alert("Thank you for your application! We will be in touch soon.");
                 window.location.href = "/creator/application/mom/yes";
             } else {
                 window.location.href = "/creator/application/mom/no";
