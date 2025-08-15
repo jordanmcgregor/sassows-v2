@@ -119,7 +119,7 @@ export default function CreatorApplicationForm() {
                         );
                     }
                 }
-                setMetaLead();
+                await setMetaLead();
                 window.location.href = "/creator/application/mom/yes";
             } else {
                 window.location.href = "/creator/application/mom/no";
