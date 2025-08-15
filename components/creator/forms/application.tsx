@@ -48,11 +48,10 @@ export default function CreatorApplicationForm() {
     // });
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
-        defaultValues: { name: "Jordan", email: "sldfkj@gmail.com", phone: "8017627420", social: "instagram.com", mom: "no", us_based: "no", hope: "Everything" },
+        // defaultValues: { name: "Jordan", email: "sldfkj@gmail.com", phone: "8017627420", social: "instagram.com", mom: "no", us_based: "no", hope: "Everything" },
     });
 
     async function onSubmit(data: z.infer<typeof schema>) {
-        alert(JSON.stringify(data));
         const supabase = await createClient();
         const { data: recordData, error: recordError } = await supabase
             .schema('creators')
@@ -120,7 +119,6 @@ export default function CreatorApplicationForm() {
                     }
                 }
                 await setMetaLead();
-                alert("Thank you for your application! We will be in touch soon.");
                 window.location.href = "/creator/application/mom/yes";
             } else {
                 window.location.href = "/creator/application/mom/no";
