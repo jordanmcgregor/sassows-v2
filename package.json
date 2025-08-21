@@ -49,7 +49,7 @@
     "firebase": "^11.8.1",
     "firebase-admin": "^13.4.0",
     "fireworks-js": "^2.10.8",
-    "framer-motion": "^12.10.0",
+    "framer-motion": "^12.23.12",
     "lucide-react": "^0.468.0",
     "luxon": "^3.6.1",
     "motion": "^12.16.0",
@@ -70,7 +70,7 @@
     "validator": "^13.15.15",
     "vaul": "^1.1.2",
     "web-push": "^3.6.7",
-    "zod": "^3.24.3"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

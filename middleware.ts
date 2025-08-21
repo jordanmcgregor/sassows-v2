@@ -6,6 +6,7 @@ import deviceDetailDetection from "@/components/detection/operating-system-and-b
 
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
   // const { pathname } = request.nextUrl
 
   // if (pathname.includes("/home")) {
@@ -37,6 +38,13 @@ export async function middleware(request: NextRequest) {
   //   // return; // Skip session update for onboarding
   //   return await updateSession(request);
   // }
+  if (pathname === "/creator/application") {
+    const randomTarget =
+      Math.random() < 0.5 ? "/creator/application" : "/creator/application/version/a/1";
+
+    return NextResponse.rewrite(new URL(randomTarget, request.url));
+  }
+
   return await updateSession(request);
 }
 
