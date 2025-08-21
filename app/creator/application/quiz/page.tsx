@@ -28,7 +28,7 @@ import * as pixel from "@/components/lib/mpixel";
 //     },
 // ];
 
-export const questions = [
+const questions = [
     {
         id: 2,
         question: "What social media platform do you use the most?",
