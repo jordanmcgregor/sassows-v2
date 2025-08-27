@@ -1,6 +1,7 @@
 import PWACheck from '@/components/detection/pwa'
 import AndroidPWAInstructions from '@/components/guardian/onboarding/pwa/download/android'
 import IphonePWAInstructions from '@/components/guardian/onboarding/pwa/download/iphone'
+import ReportMetaLead from '@/utils/meta/report/lead/wrapper'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -39,6 +40,7 @@ export default async function Page() {
                 <p><strong>Browser:</strong> {browser}</p> */}
                 <IphonePWAInstructions browser={browser} />
                 <PWACheck os={os} browser={browser} />
+                <ReportMetaLead />
             </>
         )
     }
@@ -47,6 +49,7 @@ export default async function Page() {
             <>
                 <AndroidPWAInstructions />
                 <PWACheck os={os} browser={browser} />
+                <ReportMetaLead />
             </>
         )
     }
